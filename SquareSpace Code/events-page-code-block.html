@@ -1,0 +1,124 @@
+<!-- Events (Sanity) – Squarespace-style version -->
+<section id="sanity-events"></section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Sanity read URL (public, no token)
+  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  const GROQ = `
+    *[_type=="events" && defined(startDate) && startDate >= now()]
+      | order(startDate asc){
+        _id, title, startDate, endDate, displayTime, location, locationLink, excerpt, sourceUrl, linkButtonTitle,
+        "img": image.asset->url, "alt": coalesce(image.alt, title)
+      }
+  `;
+
+  // Calendar subscribe URLs
+  const ICS_WEBCAL = 'webcal://outlook.office365.com/owa/calendar/298a8c9926d2455fa1c9f15f95ce7b50@weareedison.org/d35051de4f324ba68f421805295e615f4125728495210959811/calendar.ics';
+  const ICS_HTTPS  = ICS_WEBCAL.replace(/^webcal:\/\//,'https://');
+
+  const isZoom = (u)=>{ try{ const h=new URL(u,location.origin).hostname.toLowerCase(); return h==='zoom.us'||h.endsWith('.zoom.us'); }catch{return false;} };
+  const imgUrl = (u,w=1200,h=750)=> u ? `${u}?auto=format&fit=crop&w=${w}&h=${h}` : '';
+  const fmtDate = (d)=>{ try{ const x=new Date(d); return x.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});}catch{return ''} };
+  const fmtTime = (d)=>{ try{ const x=new Date(d); return x.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});}catch{return ''} };
+
+  async function fetchEvents(){
+    const res = await fetch(SANITY_URL, {
+      method: 'POST',
+      headers: {'content-type':'application/json'},
+      body: JSON.stringify({ query: GROQ })
+    });
+    if(!res.ok) throw new Error('Sanity query failed');
+    const { result=[] } = await res.json();
+    return result;
+  }
+
+  function render(list){
+    const root = document.getElementById('sanity-events');
+    if(!list.length){ root.innerHTML = `<p>No upcoming events.</p>`; return; }
+
+    root.innerHTML = list.map(ev=>{
+      // Comprehensive date/time formatting
+      const start = new Date(ev.startDate);
+      const end = ev.endDate ? new Date(ev.endDate) : null;
+      const sameDay = end && start.toDateString() === end.toDateString();
+      const hasStartTime = ev.displayTime !== false && (start.getHours() !== 0 || start.getMinutes() !== 0);
+      const hasEndTime = end && ev.displayTime !== false && (end.getHours() !== 0 || end.getMinutes() !== 0);
+      
+      let when = '';
+      if (sameDay) {
+        // Same day: "Mon, Aug 25 • 6:30 PM - 7:55 PM" or "Mon, Aug 25"
+        when = start.toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+        if (hasStartTime) {
+          when += ` • ${start.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true})}`;
+          if (hasEndTime) {
+            when += ` - ${end.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true})}`;
+          }
+        }
+      } else if (end) {
+        // Different days: "Mon, Aug 25 - Fri, Aug 29 • 2:30 PM - 4:30 PM" or "Mon, Aug 25 - Fri, Aug 29"
+        when = `${start.toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric',year:'numeric'})} - ${end.toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric',year:'numeric'})}`;
+        if (hasStartTime && hasEndTime) {
+          when += ` • ${start.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true})} - ${end.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true})}`;
+        }
+      } else {
+        // Single day: "Mon, Aug 25 • 6:30 PM" or "Mon, Aug 25"
+        when = start.toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+        if (hasStartTime) {
+          when += ` • ${start.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true})}`;
+        }
+      }
+      
+      const where = ev.location ? `${ev.location}${ev.locationLink ? ` <a href="${ev.locationLink}" target="_blank" rel="noopener">(map)</a>`:''}` : '';
+      const zoom = ev.sourceUrl && isZoom(ev.sourceUrl);
+      const hasExternalLink = ev.sourceUrl && !isZoom(ev.sourceUrl);
+      const buttonTitle = ev.linkButtonTitle || 'Would you like to know more?';
+
+      return `
+        <article>
+          <figure>${ev.img ? `<img src="${imgUrl(ev.img)}" alt="${(ev.alt||'').replace(/"/g,'&quot;')}" />` : ''}</figure>
+          <div class="content">
+            <h3>${ev.title||''}</h3>
+            <div class="meta">
+              <div>${when}</div>
+              ${where ? `<div>${where}</div>` : ``}
+            </div>
+            ${ev.excerpt ? `<p>${ev.excerpt}</p>` : ``}
+
+            ${zoom ? `
+              <div class="sqs-block-button-container sqs-block-button-container--left" data-zoom-row="1" data-alignment="left">
+                <div class="sqs-block-button">
+                  <a
+                    class="sqs-block-button-element sqs-button-element--primary sqs-button-element--medium"
+                    href="${ev.sourceUrl}" target="_blank" rel="noopener"
+                  >
+                    Join hybrid via Zoom
+                  </a>
+                </div>
+              </div>
+            ` : hasExternalLink ? `
+              <div class="sqs-block-button-container sqs-block-button-container--left" data-zoom-row="1" data-alignment="left">
+                <div class="sqs-block-button">
+                  <a
+                    class="sqs-block-button-element sqs-button-element--primary sqs-button-element--medium"
+                    href="${ev.sourceUrl}" target="_blank" rel="noopener"
+                  >
+                    ${buttonTitle}
+                  </a>
+                </div>
+              </div>
+            ` : ``}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+  }
+
+  fetchEvents().then(render).catch(err=>{
+    console.error(err);
+    const root = document.getElementById('sanity-events');
+    root.innerHTML = `<p>Sorry, events failed to load.</p>`;
+  });
+});
+</script>

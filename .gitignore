@@ -1,0 +1,16 @@
+# Sanity build output
+/dist/
+/build/
+
+# Node.js dependencies
+/node_modules/
+
+# Sanity cache and temporary files
+/.sanity/
+/.cache/
+
+# Environment variables
+.env
+
+# Local IDE configuration (optional)
+/.vscode/

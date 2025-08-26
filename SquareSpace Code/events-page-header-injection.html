@@ -1,0 +1,57 @@
+<style>
+  /* Keep it simple and let the theme do most of the work */
+  
+  #sanity-events{
+    display: grid;
+    gap: 48px;          /* space between events, like your /events page */
+  }
+  
+  /* Two-column layout that mirrors /events */
+  #sanity-events article{
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) 1.3fr;
+    gap: 32px;
+    align-items: start;
+  }
+  
+  /* Image aspect ratio & cropping like Squarespace thumbnails */
+  #sanity-events figure{
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    aspect-ratio: 16 / 9;   /* adjust if you change ratio site-wide */
+    margin: 0;
+  }
+  #sanity-events figure img{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  
+  /* Typography similar to your /events list */
+  #sanity-events h3{
+    margin: 0 0 8px 0;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+  #sanity-events .meta{
+    color: var(--sqs-color-text-medium, #64748b);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  #sanity-events p{ margin: 0 0 16px 0; }
+  
+  /* Buttons: we use Squarespace's own classes so theme styling applies */
+  #sanity-events .sqs-block-button-container{ 
+    margin-top: 12px; 
+    text-align: left !important;
+  }
+  
+  /* Responsive: stack image over content like the native template */
+  @media (max-width: 860px){
+    #sanity-events article{ grid-template-columns: 1fr; }
+    #sanity-events figure{ aspect-ratio: 16 / 10; }
+  }
+</style>
+  

@@ -1,0 +1,51 @@
+<!-- Global Webcal Functionality - Add to Site Header Code Injection -->
+<script>
+(function(){
+  function isO365IcsLink(a){
+    const href = (a.getAttribute('href') || '').toLowerCase();
+    return href.includes('outlook.office365.com') && href.includes('/owa/calendar/') && href.endsWith('.ics');
+  }
+
+  function wireWebcal(a){
+    if (!a || a.dataset.webcalWired === '1') return;
+    a.dataset.webcalWired = '1';
+    a.setAttribute('data-no-route','true');   // bypass Sqsp ajax routing
+    a.removeAttribute('target');              // custom schemes + _blank can be flaky
+
+    // Build webcal + https versions from the current href
+    const httpsHref  = a.href;                            // whatever is there now
+    const webcalHref = httpsHref.replace(/^https?:\/\//,'webcal://');
+
+    // SHOW WEBCAL ON HOVER:
+    a.href = webcalHref;
+
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+
+      // schedule https fallback if the OS doesn't handle webcal
+      let timer = setTimeout(function(){
+        if (!document.hidden) window.location.href = httpsHref;
+      }, 1200);
+
+      // cancel fallback if we lose visibility (handler likely opened)
+      const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+      document.addEventListener('visibilitychange', function onVis(){
+        if (document.hidden) { cancel(); document.removeEventListener('visibilitychange', onVis); }
+      });
+      window.addEventListener('blur', cancel, { once:true });
+      window.addEventListener('pagehide', cancel, { once:true });
+
+      // try webcal
+      try { window.location.href = webcalHref; } catch(e){}
+      return false;
+    }, { passive:false });
+  }
+
+  function scan(){
+    document.querySelectorAll('a[href]').forEach(a => { if (isO365IcsLink(a)) wireWebcal(a); });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan); else scan();
+  new MutationObserver(scan).observe(document.body, { childList:true, subtree:true });
+})();
+</script>

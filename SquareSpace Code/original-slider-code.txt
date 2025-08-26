@@ -1,0 +1,99 @@
+# Original Slider Code
+
+This is the home page slider implementation that reads from Sanity CMS.
+
+## Current Implementation
+
+```javascript
+<script>
+(function(){
+  const ROOT_ID='home-carousel';
+  const SANITY_PROJECT = 'YOUR_PROJECT_ID';   // ← replace
+  const SANITY_DATASET = 'production';        // ← replace if different
+  const API_VER='2023-10-01';
+
+  if (document.getElementById(ROOT_ID)?.dataset.ptaInit==='1') return;
+
+  /* helpers */
+  const Q = encodeURIComponent;
+  function qUrl(query, params={}) {
+    const base = `https://${SANITY_PROJECT}.api.sanity.io/v${API_VER}/data/query/${SANITY_DATASET}?query=${Q(query)}`;
+    const vars = Object.entries(params).map(([k,v])=>`&$${k}=${Q(String(v))}`).join('');
+    return base + vars;
+  }
+  async function runQuery(query, params){ const r=await fetch(qUrl(query, params)); const j=await r.json(); return j.result||[]; }
+  function imgUrl(u,w=1600,h=900){ return u ? `${u}?auto=format&fit=crop&w=${w}&h=${h}` : ''; }
+
+  /* GROQ */
+  const slidesQuery = `
+    *[_type=="slide" && enabled==true] | order(order asc){
+      title, meta, href, "img": image.asset->url, "alt": coalesce(image.alt, title)
+    }`;
+  const featEventsQuery = `
+    *[_type=="event" && defined(startDate) && startDate >= now() && featured==true]
+      | order(startDate asc)[0...$n]{
+        title, excerpt, startDate, endDate, sourceUrl,
+        "img": image.asset->url, "alt": coalesce(image.alt, title)
+      }`;
+
+  function appendSlide(list, s){
+    const tag = s.href ? 'a' : 'div';
+    const li = document.createElement('li'); li.className='splide__slide';
+    li.innerHTML = `
+      <${tag} class="pta-card"${s.href?` href="${s.href}" target="_blank" rel="noopener"`:''}>
+        <figure class="pta-figure">
+          <img src="${imgUrl(s.img,1600,900)}" alt="${(s.alt||s.title||'').replace(/"/g,'&quot;')}">
+        </figure>
+        <div class="pta-caption">
+          ${s.title?`<div class="pta-title">${s.title}</div>`:''}
+          ${s.meta?`<div class="pta-meta">${s.meta}</div>`:''}
+        </div>
+      </${tag}>`;
+    list.appendChild(li);
+  }
+
+  async function init(){
+    const root=document.getElementById(ROOT_ID);
+    if(!root) return; root.dataset.ptaInit='1';
+    const list=root.querySelector('.splide__list'); list.innerHTML='';
+
+    // 1) Sanity slides (evergreen)
+    let evergreen = await runQuery(slidesQuery);
+
+    // 2) Sanity featured events (limit 3)
+    let events = await runQuery(featEventsQuery, { n: 3 });
+    // Map events for carousel (link to /events landing, keep meta = date)
+    events = events.map(e=>{
+      const d = e.startDate ? new Date(e.startDate) : null;
+      const meta = d ? d.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
+      return { title: e.title, meta, href: '/events', img: e.img, alt: e.alt };
+    });
+
+    const slides=[...evergreen, ...events];
+    if(!slides.length){ list.innerHTML='<li class="splide__slide"><div class="pta-figure"></div></li>'; }
+    else slides.forEach(s=>appendSlide(list,s));
+
+    // ensure Splide JS present
+    async function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.defer=true;s.onload=res;s.onerror=rej;document.body.appendChild(s);});}
+    if(!window.Splide){ await loadScript('https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js'); }
+    if(window.Splide){
+      if(root._splide){ try{ root._splide.destroy(true);}catch{} }
+      root._splide = new Splide(root,{
+        type:'loop', perPage:1, autoplay:true, interval:5000, pauseOnHover:true, arrows:true, pagination:true, gap:'14px'
+      }).mount();
+    }
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+```
+
+## Notes
+
+- This code will be used as reference when implementing the new Sanity-powered slider
+- The new implementation should maintain the same visual design and user experience
+- Events marked with "Show on home slider" in Sanity should appear in this carousel
+- Uses Splide.js for carousel functionality
+- Combines evergreen slides with featured events
+- Maintains existing CSS classes (pta-card, pta-figure, pta-caption, etc.)
