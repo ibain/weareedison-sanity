@@ -2,11 +2,21 @@
 
 This folder contains the code that connects Sanity CMS content to the SquareSpace website. These files make the events and slides from Sanity appear on the live website.
 
+## TL;DR: Where does each file go?
+- Home page carousel → Code Block on Home → `slider-page-ready.html`
+- Events page styles → Page Header → `events-page-header-injection.html`
+- Events page content → Code Block on Events → `events-page-code-block.html`
+- App install page → Code Block on App page → `app-page-code-block.html`
+- Global features → Site Header Code Injection → `global-header-injection.html`
+
 ## 📋 File Overview
 
 ### 🏠 Home Page Files
 - **`slider-page-ready.js`** - Home page carousel script
 - **`original-slider-code.txt`** - Reference code from original implementation
+
+### 📱 App Install Page
+- **`app-page-code-block.html`** - Smart app install/redirect page
 
 ### 📅 Events Page Files  
 - **`events-page-code-block.html`** - Events page functionality script
@@ -35,6 +45,14 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
    - Copy contents of `events-page-code-block.html`
    - Paste into the Code Block
 4. Save the page
+
+### Step 2b: App Install Page
+Use this for a dedicated “Get the App” page that redirects to the app stores and avoids a blank page on return.
+1. Go to the desired page (e.g., `/app` or “Get the App”)
+2. Add a **Code Block** to the page
+3. Copy the entire contents of `app-page-code-block.html`
+4. Paste into the Code Block
+5. Save the page
 
 ### Step 3: Global Features
 1. Go to SquareSpace Dashboard → Settings → Advanced → Code Injection
@@ -67,6 +85,21 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - Hides original SquareSpace events
 
 **Deployment**: Code Block on Events page
+
+### `app-page-code-block.html`
+**Purpose**: Provides smart redirect to the App Store/Google Play with a graceful return.
+
+**What it does:**
+- Detects device (iOS/Android) and redirects to the correct store
+- Remembers the entry context to avoid a blank page when coming back from the store
+- If opened from an internal page, returns users back to that source page on return
+- If opened directly or from an external site, returns users to the home page (`/`)
+- Shows self-hosted App Store/Google Play badges if the redirect doesn’t fire quickly
+
+**Customization:**
+- To keep users on the app page after returning, open `app-page-code-block.html` and replace the home redirect line with a call to show the fallback badges (see the inline comment in the file).
+
+**Deployment**: Code Block on the dedicated App page
 
 ### `events-page-header-injection.html`
 **Purpose**: Provides CSS styling for the Sanity events page
@@ -166,6 +199,16 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - **Design changes**: Update CSS in header injection files
 - **Functionality changes**: Update JavaScript in code block files
 - **New features**: May require new files or modifications
+
+### Simple checks after updating a file
+- Refresh the page and confirm content appears (no blank areas)
+- Open browser Console for red error messages
+- Test on phone if the change affects navigation or redirects (e.g., app page)
+
+### App install page quick behavior
+- If opened from an Edison page → returns to that page after the store
+- If opened from outside/direct → returns to the home page
+- To keep users on the app page instead, see inline note in `app-page-code-block.html`
 
 ### Backup Strategy:
 - Keep copies of working versions before making changes

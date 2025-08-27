@@ -1,0 +1,142 @@
+<!-- === Edison: smart redirect + self-hosted official badges fallback === -->
+
+<style>
+    .app-wrap { padding: 2rem 1rem; }
+    .app-heading { text-align: center; margin: 0 0 .5rem; }
+    .app-sub { text-align:center; margin: 0 0 1rem; opacity:.85; }
+  
+    /* badge layout (keeps brand aspect ratios; no stretching) */
+    .badge-row { display:flex; gap:20px; justify-content:center; align-items:center; flex-wrap:wrap; padding:10px; }
+    .badge-row a { display:inline-block; line-height:0; }
+    .badge-row img { height:80px; width:auto; display:block; }
+    @media (max-width:480px){
+      .badge-row img { height:64px; }
+    }
+  
+    .app-legal { text-align:center; margin-top:.75rem; font-size:.75rem; opacity:.7; }
+  </style>
+  
+  <div id="fallback" class="app-wrap" style="display:none;">
+    <h1 class="app-heading">Get the Edison app!</h1>
+    <p class="app-sub">Please choose your store:</p>
+  
+    <div class="badge-row">
+      <!-- Apple App Store (self-hosted badge) -->
+      <a href="https://apps.apple.com/us/app/thomas-edison-elementary/id1175826287" aria-label="Download on the App Store">
+        <img
+          src="https://images.squarespace-cdn.com/content/685044f04b717a04c219d942/5e6f29c8-8924-40af-b629-90e2c6c3f6df/AppleAppStoreDownload.png?content-type=image%2Fpng"
+          alt="Download on the App Store"
+          height="80"
+          loading="lazy"
+          decoding="async">
+      </a>
+  
+      <!-- Google Play (self-hosted badge) -->
+      <a href="https://play.google.com/store/apps/details?id=com.totalapptitude.thomased" aria-label="Get it on Google Play">
+        <img
+          src="https://images.squarespace-cdn.com/content/685044f04b717a04c219d942/b42aa68c-40b9-4f69-8d40-105adb5045cd/GooglePlayDownload.png?content-type=image%2Fpng"
+          alt="Get it on Google Play"
+          height="80"
+          loading="lazy"
+          decoding="async">
+      </a>
+    </div>
+  
+    <p class="app-legal">
+      Google Play and the Google Play logo are trademarks of Google LLC.
+      Apple and the Apple logo are trademarks of Apple Inc., registered in the U.S. and other countries.
+    </p>
+  </div>
+  
+  <script>
+    (function () {
+      // Edison app links
+      var IOS_URL     = 'https://apps.apple.com/us/app/thomas-edison-elementary/id1175826287';
+      var ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.totalapptitude.thomased';
+  
+      // Device detection (covers iPadOS with desktop UA)
+      var ua = navigator.userAgent || navigator.vendor || window.opera;
+      var isAndroid = /Android/i.test(ua);
+      var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  
+      var target = isAndroid ? ANDROID_URL : (isIOS ? IOS_URL : null);
+
+      // Capture entry context so we know where to send users when they come back
+      var entryReferrer = document.referrer || '';
+      var fromInternal = entryReferrer.indexOf(location.origin) === 0;
+      var STORAGE_KEY_TRIED = 'edisonAppRedirectTried';
+      var STORAGE_KEY_REF   = 'edisonAppEntryReferrer';
+      var STORAGE_KEY_INT   = 'edisonAppEntryFromInternal';
+
+      function showFallback() {
+        var fb = document.getElementById('fallback');
+        if (fb) fb.style.display = 'block';
+      }
+
+      function handleReturnIfNeeded() {
+        // Only act if we previously attempted an external store redirect
+        if (!sessionStorage.getItem(STORAGE_KEY_TRIED)) return;
+
+        // Prevent loops
+        sessionStorage.removeItem(STORAGE_KEY_TRIED);
+
+        var savedRef = sessionStorage.getItem(STORAGE_KEY_REF) || '';
+        var savedInternal = sessionStorage.getItem(STORAGE_KEY_INT) === '1';
+
+        // If user came from an internal page and it's different, go back there
+        if (savedInternal && savedRef && savedRef !== location.href) {
+          window.location.replace(savedRef);
+          return;
+        }
+
+        // Otherwise, send to home page when coming from external/direct
+        // If you prefer to keep users here instead, replace with showFallback()
+        window.location.replace('/');
+      }
+  
+      if (target) {
+        // Remember we attempted to open a store so we can recover on return
+        try {
+          sessionStorage.setItem(STORAGE_KEY_TRIED, '1');
+          sessionStorage.setItem(STORAGE_KEY_REF, entryReferrer);
+          sessionStorage.setItem(STORAGE_KEY_INT, fromInternal ? '1' : '0');
+        } catch (e) { /* ignore storage errors */ }
+
+        // Use assign so returning via back lands on this page (not blank)
+        window.location.assign(target);
+        // Safety net: show badges if redirect doesn’t happen quickly
+        setTimeout(function(){
+          if (document.visibilityState !== 'hidden') showFallback();
+        }, 1500);
+      } else {
+        showFallback();
+      }
+
+      // Handle returning from App Store/Play via BFCache or tab switch
+      window.addEventListener('pageshow', function (evt) {
+        // Safari uses BFCache; pageshow fires with persisted=true
+        handleReturnIfNeeded();
+      });
+
+      document.addEventListener('visibilitychange', function(){
+        if (document.visibilityState === 'visible') {
+          handleReturnIfNeeded();
+        }
+      });
+    })();
+  </script>
+  
+  <noscript>
+    <div class="app-wrap">
+      <h1 class="app-heading">Get the Edison app!</h1>
+      <div class="badge-row">
+        <a href="https://apps.apple.com/us/app/thomas-edison-elementary/id1175826287">
+          <img src="https://images.squarespace-cdn.com/content/685044f04b717a04c219d942/5e6f29c8-8924-40af-b629-90e2c6c3f6df/AppleAppStoreDownload.png?content-type=image%2Fpng" alt="Download on the App Store" height="80">
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.totalapptitude.thomased">
+          <img src="https://images.squarespace-cdn.com/content/685044f04b717a04c219d942/b42aa68c-40b9-4f69-8d40-105adb5045cd/GooglePlayDownload.png?content-type=image%2Fpng" alt="Get it on Google Play" height="80">
+        </a>
+      </div>
+    </div>
+  </noscript>
+  

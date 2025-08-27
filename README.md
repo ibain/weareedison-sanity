@@ -21,6 +21,30 @@ This is the content management system (CMS) for the We Are Edison website. It al
 4. Fill in the required fields (marked with *)
 5. Click "Publish" when ready
 
+## ✅ If You're Not Technical, Start Here
+
+### What you can do without code
+- Add/update Events and Evergreen Slides in Sanity (no code needed)
+- Replace images and text directly in Sanity
+- Reorder slides by adjusting the Order number
+
+### When you might touch Squarespace
+- If a page is missing dynamic content (events, slider, or app page), you may need to paste a code snippet into a Code Block or Header Injection. Use the quick reference below and the instructions in `SquareSpace Code/README.md`.
+
+### Squarespace placement quick reference
+- Home page carousel → Code Block on Home page → `SquareSpace Code/slider-page-ready.js`
+- Events page styles → Page Settings → Advanced → Page Header Code Injection → `SquareSpace Code/events-page-header-injection.html`
+- Events page content → Code Block on Events page → `SquareSpace Code/events-page-code-block.html`
+- App install page → Code Block on App page (e.g., "/app") → `SquareSpace Code/app-page-code-block.html`
+- Global features → Settings → Advanced → Code Injection → Site Header → `SquareSpace Code/global-header-injection.html`
+
+### App install page (what to expect)
+- Automatically sends visitors to the correct app store
+- Returns visitors to the source page if they came from inside the site
+- Returns to the home page if opened directly or from outside the site
+- Shows download badges if redirect is blocked or delayed
+- To keep users on the app page after returning, see the note inside `SquareSpace Code/app-page-code-block.html`
+
 ## 📋 Content Types
 
 ### Events
@@ -145,10 +169,11 @@ weareedison-sanity/
 │   ├── events.ts     # Events schema
 │   └── slide.ts      # Evergreen slides schema
 ├── SquareSpace Code/ # Frontend integration code
-│   ├── events-page-code-block.html      # Events page script
+│   ├── app-page-code-block.html          # App install/redirect page code
+│   ├── events-page-code-block.html       # Events page script
 │   ├── events-page-header-injection.html # Events page CSS
-│   ├── slider-page-ready.js             # Home slider script
-│   └── global-header-injection.html     # Global functionality
+│   ├── slider-page-ready.js              # Home slider script
+│   └── global-header-injection.html      # Global functionality
 ├── sanity.config.ts  # Sanity configuration
 ├── package.json      # Dependencies and scripts
 └── README.md         # This file
@@ -159,6 +184,7 @@ weareedison-sanity/
 The `SquareSpace Code/` folder contains scripts that integrate Sanity content into the SquareSpace website. These files are deployed to SquareSpace using Code Blocks and Page Header Code Injection.
 
 ### Key Files:
+- **`app-page-code-block.html`**: App install/redirect page script (goes in Code Block)
 - **`events-page-code-block.html`**: Script for the events page (goes in Code Block)
 - **`events-page-header-injection.html`**: CSS styling for events page (goes in Page Header)
 - **`slider-page-ready.js`**: Script for home page carousel (goes in Code Block)
@@ -170,6 +196,15 @@ The `SquareSpace Code/` folder contains scripts that integrate Sanity content in
    - **Code Blocks**: For JavaScript functionality
    - **Page Header**: For CSS styling
    - **Site Header**: For global features
+
+### App Install/Redirect Page Behavior
+- Automatically detects Android/iOS and redirects to the appropriate store
+- Remembers entry context to avoid a blank page when returning from the store
+- If opened from an internal page, returns users to the source page on return
+- If opened directly or from external sites, returns users to the home page (`/`)
+- If the store redirect doesn’t fire quickly, displays self-hosted App Store/Google Play badges as a fallback
+
+To change return behavior to stay on the app page after coming back from the store, edit `SquareSpace Code/app-page-code-block.html` and replace the home redirect with the fallback display as indicated in the file comments.
 
 ## 🔄 Migration Status
 
@@ -205,5 +240,5 @@ This project is transitioning from SquareSpace's built-in content management to 
 
 ---
 
-**Last Updated**: July 2025  
+**Last Updated**: August 2025  
 **Maintained By**: We Are Edison Development Team
