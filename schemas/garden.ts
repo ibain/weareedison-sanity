@@ -4,6 +4,14 @@ export default {
   title: 'Garden',
   fields: [
     {
+      name: 'title',
+      type: 'string',
+      title: 'Page name',
+      description: 'Name used in the Studio (e.g. in the tab). Does not appear on the website.',
+      initialValue: 'Garden',
+      validation: (R: any) => R.required(),
+    },
+    {
       name: 'intro',
       type: 'text',
       title: 'Intro',
@@ -63,9 +71,9 @@ export default {
     },
   ],
   preview: {
-    select: {},
-    prepare() {
-      return { title: 'Garden', subtitle: 'Intro, What\'s Going On & FAQ' }
+    select: { title: 'title' },
+    prepare({ title }: { title?: string }) {
+      return { title: title || 'Garden', subtitle: 'Intro, What\'s Going On & FAQ' }
     },
   },
 }
