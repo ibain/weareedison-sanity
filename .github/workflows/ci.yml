@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: unset npm_config_devdir 2>/dev/null; npm ci
+
+      - name: Apply security fixes
+        run: unset npm_config_devdir 2>/dev/null; npm audit fix
+
+      - name: Lint
+        run: unset npm_config_devdir 2>/dev/null; npm run lint
+
+      - name: Build
+        run: unset npm_config_devdir 2>/dev/null; npm run build
+
+      - name: Test
+        run: unset npm_config_devdir 2>/dev/null; npm test
+
+      - name: Audit (fail on high/critical)
+        run: unset npm_config_devdir 2>/dev/null; npm audit --audit-level=high

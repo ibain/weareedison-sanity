@@ -1,0 +1,42 @@
+<!-- Garden What's Going On (Sanity) – list of paragraphs -->
+<div id="sanity-garden-whats-going-on"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  const GROQ = `*[_type == "garden"][0]{ "items": whatsGoingOn[].paragraph }`;
+
+  async function fetchGarden() {
+    const res = await fetch(SANITY_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: GROQ })
+    });
+    if (!res.ok) throw new Error('Sanity query failed');
+    const { result } = await res.json();
+    return result;
+  }
+
+  function render(data) {
+    const root = document.getElementById('sanity-garden-whats-going-on');
+    if (!data || !data.items || !data.items.length) {
+      root.innerHTML = '';
+      return;
+    }
+    var html = '<ul class="sanity-garden-whats-going-on__list">';
+    data.items.forEach(function (paragraph) {
+      if (paragraph == null || paragraph === '') return;
+      var safe = String(paragraph).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+      html += '<li class="sanity-garden-whats-going-on__item">' + safe + '</li>';
+    });
+    html += '</ul>';
+    root.innerHTML = html;
+  }
+
+  fetchGarden().then(render).catch(function (err) {
+    console.error(err);
+    var root = document.getElementById('sanity-garden-whats-going-on');
+    root.innerHTML = '<p>What\'s Going On could not be loaded.</p>';
+  });
+});
+</script>

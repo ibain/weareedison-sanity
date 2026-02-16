@@ -35,5 +35,15 @@ export const structure: StructureResolver = (S) =>
                 ),
             ])
         ),
-      ...S.documentTypeListItems().filter((li) => li.getId() !== 'events'),
+      S.listItem()
+        .title('Garden')
+        .child(
+          S.document()
+            .schemaType('garden')
+            .documentId('garden')
+        ),
+      ...S.documentTypeListItems().filter((li) => {
+        const id = li.getId()
+        return id !== 'events' && id !== 'garden'
+      }),
     ])

@@ -8,6 +8,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - Events page content → Code Block on Events → `events-page-code-block.html`
 - App install page → Code Block on App page → `app-page-code-block.html`
 - Global features → Site Header Code Injection → `global-header-injection.html`
+- **Garden page**: Intro → Code Block 1 → `garden-intro-code-block.html`; What's Going On → Code Block 2 → `garden-whats-going-on-code-block.html`; FAQ → Code Block 3 → `garden-faq-code-block.html`; optional styles → Page Header → `garden-page-header-injection.html`
 
 ## 📋 File Overview
 
@@ -21,6 +22,12 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 ### 📅 Events Page Files  
 - **`events-page-code-block.html`** - Events page functionality script
 - **`events-page-header-injection.html`** - Events page styling CSS
+
+### 🌱 Garden Page Files
+- **`garden-intro-code-block.html`** - Renders the Garden intro text (Code Block 1)
+- **`garden-whats-going-on-code-block.html`** - Renders the What's Going On list (Code Block 2)
+- **`garden-faq-code-block.html`** - Renders the FAQ section (Code Block 3)
+- **`garden-page-header-injection.html`** - Optional CSS for Garden page sections (Page Header Code Injection)
 
 ### 🌐 Global Files
 - **`global-header-injection.html`** - Global functionality (calendar links, etc.)
@@ -54,6 +61,15 @@ Use this for a dedicated “Get the App” page that redirects to the app stores
 4. Paste into the Code Block
 5. Save the page
 
+### Step 2c: Garden Page
+Use three Code Blocks and optional Page Header for styling.
+1. Go to SquareSpace Dashboard → Pages → Garden (or the page you use for Garden).
+2. **Optional – Page Header Code Injection**: Copy contents of `garden-page-header-injection.html` into Page Settings → Advanced → Page Header Code Injection.
+3. **Code Block 1 (Intro)**: Add a Code Block, copy contents of `garden-intro-code-block.html`, paste, save.
+4. **Code Block 2 (What's Going On)**: Add a second Code Block, copy contents of `garden-whats-going-on-code-block.html`, paste, save.
+5. **Code Block 3 (FAQ)**: Add a third Code Block, copy contents of `garden-faq-code-block.html`, paste, save.
+6. Save the page.
+
 ### Step 3: Global Features
 1. Go to SquareSpace Dashboard → Settings → Advanced → Code Injection
 2. Copy contents of `global-header-injection.html`
@@ -75,16 +91,27 @@ Use this for a dedicated “Get the App” page that redirects to the app stores
 **Deployment**: Code Block on Home page
 
 ### `events-page-code-block.html`
-**Purpose**: Replaces SquareSpace's built-in events with Sanity events
+**Purpose**: Renders Sanity events on the Events page
 
 **What it does:**
 - Fetches all published events from Sanity
-- Displays events in a single-column layout
-- Shows date/time ranges with proper formatting
+- Displays events with correct date/time formatting
 - Handles Zoom and external link buttons
-- Hides original SquareSpace events
+
+Note: Calendar subscription is now handled globally (see `global-header-injection.html`).
 
 **Deployment**: Code Block on Events page
+
+### Garden page code blocks
+**Purpose**: Render Garden page content (intro, What's Going On list, FAQ) from Sanity.
+
+**Files and deployment:**
+- `garden-intro-code-block.html` – Renders the intro text. **Deployment**: Code Block 1 on Garden page.
+- `garden-whats-going-on-code-block.html` – Renders the list of paragraphs. **Deployment**: Code Block 2 on Garden page.
+- `garden-faq-code-block.html` – Renders FAQ title and answer for each item. **Deployment**: Code Block 3 on Garden page.
+- `garden-page-header-injection.html` – Optional CSS for the three sections. **Deployment**: Page Header Code Injection on Garden page only.
+
+**What they do:** Each block fetches the single Garden document from Sanity and renders its section. Content is managed in Sanity under **Garden** (intro, What's Going On, FAQ).
 
 ### `app-page-code-block.html`
 **Purpose**: Provides smart redirect to the App Store/Google Play with a graceful return.
@@ -113,12 +140,17 @@ Use this for a dedicated “Get the App” page that redirects to the app stores
 **Deployment**: Page Header Code Injection on Events page
 
 ### `global-header-injection.html`
-**Purpose**: Provides global functionality across the entire site
+**Purpose**: Global calendar subscribe lightbox and link handling
 
 **What it does:**
-- Handles calendar subscription links (webcal/HTTPS fallback)
-- Provides consistent behavior for calendar links anywhere on site
-- Works with existing SquareSpace calendar functionality
+- Intercepts Office 365 `.ics` links site‑wide and opens a themed lightbox
+- Supports normal Squarespace buttons using a simple data attribute trigger
+- Offers three options: Add to Google Calendar (Add by URL), Apple/Outlook/webcal, Download ICS
+- Uses Edison theme colors (yellow panel, blue border) and Squarespace fonts
+
+**How editors add a Subscribe button (no code):**
+1) Easiest: create a normal Button and set its URL to the shared `.ics` link. The lightbox will open automatically.
+2) Custom feed: create a normal Button and add a custom attribute `data-calendar-subscribe`; optionally add `data-ics="https://.../calendar.ics"`.
 
 **Deployment**: Site Header Code Injection
 

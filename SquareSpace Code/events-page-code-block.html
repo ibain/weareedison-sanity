@@ -13,10 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   `;
 
-  // Calendar subscribe URLs
-  const ICS_WEBCAL = 'webcal://outlook.office365.com/owa/calendar/298a8c9926d2455fa1c9f15f95ce7b50@weareedison.org/d35051de4f324ba68f421805295e615f4125728495210959811/calendar.ics';
-  const ICS_HTTPS  = ICS_WEBCAL.replace(/^webcal:\/\//,'https://');
-
   const isZoom = (u)=>{ try{ const h=new URL(u,location.origin).hostname.toLowerCase(); return h==='zoom.us'||h.endsWith('.zoom.us'); }catch{return false;} };
   const imgUrl = (u,w=1200,h=750)=> u ? `${u}?auto=format&fit=crop&w=${w}&h=${h}` : '';
   const fmtDate = (d)=>{ try{ const x=new Date(d); return x.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});}catch{return ''} };

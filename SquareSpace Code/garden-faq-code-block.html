@@ -1,0 +1,51 @@
+<!-- Garden FAQ (Sanity) -->
+<div id="sanity-garden-faq"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  const GROQ = `*[_type == "garden"][0]{ "items": faq[]{ title, content } }`;
+
+  async function fetchGarden() {
+    const res = await fetch(SANITY_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: GROQ })
+    });
+    if (!res.ok) throw new Error('Sanity query failed');
+    const { result } = await res.json();
+    return result;
+  }
+
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+  }
+
+  function render(data) {
+    const root = document.getElementById('sanity-garden-faq');
+    if (!data || !data.items || !data.items.length) {
+      root.innerHTML = '';
+      return;
+    }
+    var html = '<div class="sanity-garden-faq__list">';
+    data.items.forEach(function (item) {
+      if (!item || !item.title) return;
+      var title = escapeHtml(item.title);
+      var content = item.content ? escapeHtml(item.content) : '';
+      html += '<div class="sanity-garden-faq__item">';
+      html += '<h3 class="sanity-garden-faq__title">' + title + '</h3>';
+      if (content) html += '<div class="sanity-garden-faq__content">' + content + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    root.innerHTML = html;
+  }
+
+  fetchGarden().then(render).catch(function (err) {
+    console.error(err);
+    var root = document.getElementById('sanity-garden-faq');
+    root.innerHTML = '<p>FAQ could not be loaded.</p>';
+  });
+});
+</script>

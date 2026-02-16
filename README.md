@@ -12,11 +12,12 @@ This is the content management system (CMS) for the We Are Edison website. It al
 ### 2. What You Can Manage
 - **Events**: Add, edit, and organize upcoming events
 - **Evergreen Slides**: Create slides for the home page carousel
+- **Garden**: Edit the Garden page (intro, What's Going On list, FAQ)
 - **Images**: Upload and crop images to the correct size
 
 ### 3. Basic Workflow
 1. Go to https://weareedison.sanity.studio/
-2. Click "Events" or "Evergreen Slides" in the left sidebar
+2. Click "Events", "Evergreen Slides", or "Garden" in the left sidebar
 3. Click "Create new" to add content
 4. Fill in the required fields (marked with *)
 5. Click "Publish" when ready
@@ -37,6 +38,7 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - Events page content → Code Block on Events page → `SquareSpace Code/events-page-code-block.html`
 - App install page → Code Block on App page (e.g., "/app") → `SquareSpace Code/app-page-code-block.html`
 - Global features → Settings → Advanced → Code Injection → Site Header → `SquareSpace Code/global-header-injection.html`
+- Garden page → Three Code Blocks (Intro, What's Going On, FAQ) + optional Page Header → see `SquareSpace Code/README.md` (Garden section)
 
 ### App install page (what to expect)
 - Automatically sends visitors to the correct app store
@@ -93,6 +95,16 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - **Link**: URL to link to when clicked
 - **Enabled**: Check to show, uncheck to hide
 - **Order**: Number to control display order (0 = first)
+
+### Garden
+**Purpose**: Single document that drives the Garden page (intro, What's Going On list, FAQ).
+
+**Sections:**
+- **Intro**: One text block for the top of the page.
+- **What's Going On**: Ordered list of paragraphs (each item is one paragraph).
+- **FAQ**: List of question/title and answer (content) pairs.
+
+**Deployment on Squarespace:** Use three Code Blocks for Intro, What's Going On, and FAQ, plus optional Page Header for CSS. See `SquareSpace Code/README.md` for file names and placement.
 
 ## 🖼️ Image Guidelines
 
@@ -151,10 +163,17 @@ npm run dev
 npm run deploy
 ```
 
+### CI/CD and auto-updates
+- **GitHub Actions**: CI runs on every push and pull request: install, **apply security fixes** (`npm audit fix`), **lint**, build, test, then **audit** (fails if high/critical vulnerabilities remain). On push to `main`, the Deploy workflow does the same and then deploys the Studio. Add a `SANITY_AUTH_TOKEN` secret (sanity.io/manage → API → Tokens → "Deploy studio") in the repo's GitHub Settings → Secrets.
+- **Renovate**: Dependency updates are opened as PRs; minor, patch, and lockfile (pin/digest) updates are set to automerge when CI passes. That keeps supported versions (e.g. React, Sanity) up to date and avoids deprecation warnings over time.
+
 ### Available Scripts
 - `npm run dev` - Start development server (localhost:3333)
 - `npm run start` - Start production server
 - `npm run build` - Build for production
+- `npm run test` - Run tests (build)
+- `npm run lint` - Run ESLint
+- `npm run fix` - Apply security fixes and build (run this if CI fails on audit; then commit and push)
 - `npm run deploy` - Deploy to weareedison.sanity.studio
 
 ### API Access
@@ -167,11 +186,14 @@ npm run deploy
 weareedison-sanity/
 ├── schemas/           # Content type definitions
 │   ├── events.ts     # Events schema
+│   ├── garden.ts     # Garden page schema
 │   └── slide.ts      # Evergreen slides schema
 ├── SquareSpace Code/ # Frontend integration code
 │   ├── app-page-code-block.html          # App install/redirect page code
 │   ├── events-page-code-block.html       # Events page script
 │   ├── events-page-header-injection.html # Events page CSS
+│   ├── garden-*-code-block.html          # Garden Intro, What's Going On, FAQ
+│   ├── garden-page-header-injection.html # Garden page CSS (optional)
 │   ├── slider-page-ready.js              # Home slider script
 │   └── global-header-injection.html      # Global functionality
 ├── sanity.config.ts  # Sanity configuration
@@ -224,6 +246,20 @@ This project is transitioning from SquareSpace's built-in content management to 
 - **Flexible Display**: Control over time display, featured content
 - **Accessibility**: Required alt text for images
 - **Future-Proof**: Can be used with any website platform
+
+## 🔧 Maintenance (for anyone running the project)
+
+- **CI fails on "Audit (fail on high/critical)"**  
+  Run `npm run fix`, commit the updated `package-lock.json` (and any `package.json` changes), and push. CI will pass once high/critical vulnerabilities are fixed.
+
+- **Deprecation warnings (e.g. "react should be ^19.2.2")**  
+  Renovate will open PRs to bump those dependencies; merge them (they automerge when CI passes). Or run `npm update` and commit if you want to fix immediately.
+
+- **No need to remember manual steps**  
+  Pushing and merging runs tests and (on `main`) deploy. Renovate keeps dependencies updated. Use `npm run fix` only when CI fails on audit.
+
+- **"npm warn Unknown env config \"devdir\""**  
+  Something in your environment (e.g. shell profile or another package manager) sets `npm_config_devdir`. CI unsets it so the warning does not appear there. Locally, for the current terminal run `unset npm_config_devdir`. To stop it permanently, find where it’s set (e.g. `grep -r devdir ~/.zshrc ~/.bashrc ~/.npmrc 2>/dev/null`) and remove or comment out that line.
 
 ## 🆘 Troubleshooting
 

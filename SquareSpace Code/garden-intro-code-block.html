@@ -1,0 +1,36 @@
+<!-- Garden Intro (Sanity) -->
+<div id="sanity-garden-intro"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  const GROQ = `*[_type == "garden"][0]{ intro }`;
+
+  async function fetchGarden() {
+    const res = await fetch(SANITY_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: GROQ })
+    });
+    if (!res.ok) throw new Error('Sanity query failed');
+    const { result } = await res.json();
+    return result;
+  }
+
+  function render(data) {
+    const root = document.getElementById('sanity-garden-intro');
+    if (!data || data.intro == null || data.intro === '') {
+      root.innerHTML = '';
+      return;
+    }
+    const text = String(data.intro).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+    root.innerHTML = '<div class="sanity-garden-intro__text">' + text + '</div>';
+  }
+
+  fetchGarden().then(render).catch(function (err) {
+    console.error(err);
+    var root = document.getElementById('sanity-garden-intro');
+    root.innerHTML = '<p>Intro content could not be loaded.</p>';
+  });
+});
+</script>

@@ -1,51 +1,120 @@
-<!-- Global Webcal Functionality - Add to Site Header Code Injection -->
+<!-- Global Webcal Functionality - Edison theme + Google 'Add by URL' + Edison calendar yellow -->
 <script>
-(function(){
-  function isO365IcsLink(a){
-    const href = (a.getAttribute('href') || '').toLowerCase();
-    return href.includes('outlook.office365.com') && href.includes('/owa/calendar/') && href.endsWith('.ics');
-  }
-
-  function wireWebcal(a){
-    if (!a || a.dataset.webcalWired === '1') return;
-    a.dataset.webcalWired = '1';
-    a.setAttribute('data-no-route','true');   // bypass Sqsp ajax routing
-    a.removeAttribute('target');              // custom schemes + _blank can be flaky
-
-    // Build webcal + https versions from the current href
-    const httpsHref  = a.href;                            // whatever is there now
-    const webcalHref = httpsHref.replace(/^https?:\/\//,'webcal://');
-
-    // SHOW WEBCAL ON HOVER:
-    a.href = webcalHref;
-
-    a.addEventListener('click', function(ev){
-      ev.preventDefault();
-
-      // schedule https fallback if the OS doesn't handle webcal
-      let timer = setTimeout(function(){
-        if (!document.hidden) window.location.href = httpsHref;
-      }, 1200);
-
-      // cancel fallback if we lose visibility (handler likely opened)
-      const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
-      document.addEventListener('visibilitychange', function onVis(){
-        if (document.hidden) { cancel(); document.removeEventListener('visibilitychange', onVis); }
+  (function(){
+    const DEFAULT_ICS_HTTPS = "https://outlook.office365.com/owa/calendar/298a8c9926d2455fa1c9f15f95ce7b50@weareedison.org/d35051de4f324ba68f421805295e615f4125728495210959811/calendar.ics";
+    const DEFAULT_ICS_WEBCAL = DEFAULT_ICS_HTTPS.replace(/^https?:\/\//,"webcal://");
+  
+    // === brand colors ===
+    const brandYellow = "#FFDE6C";    // Edison calendar section yellow
+    const brandLightBlue = "#90CAF9"; // Edison light blue border
+  
+    function isO365IcsLink(a){
+      const href = (a.getAttribute("href") || "").toLowerCase();
+      return href.includes("outlook.office365.com") && href.includes("/owa/calendar/") && href.endsWith(".ics");
+    }
+    function isGoogleCalendarLink(a){
+      const href = (a.getAttribute("href") || "").toLowerCase();
+      return href.includes("calendar.google.com") && href.includes("action=template");
+    }
+  
+    function showCalendarChoiceDialog(webcalUrl, httpsUrl) {
+      const modal = document.createElement("div");
+      modal.setAttribute("style","position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;");
+  
+      // Card with Edison calendar yellow + light blue border
+      const content = document.createElement("div");
+      content.setAttribute("style",
+        "background:"+brandYellow+";padding:28px 26px;border-radius:12px;max-width:500px;width:92%;" +
+        "box-shadow:0 8px 32px rgba(0,0,0,.18);" +
+        "border:6px solid "+brandLightBlue+";" +
+        "color:var(--sqs-color-text-high,#1f2937);text-align:center;"
+      );
+  
+      var html = "";
+      html += "<h3 style=\"margin:0 0 14px 0;color:var(--sqs-color-primary,#1a73e8);font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:clamp(1.1rem,2.2vw,1.35rem);\">Subscribe to Calendar</h3>";
+      html += "<p style=\"margin:0 0 24px 0;color:var(--sqs-color-text-high,#1f2937);line-height:1.7;\">Choose how you'd like to add our school events to your calendar:</p>";
+  
+      var btnFilled = "display:inline-block;text-align:center;padding:14px 22px;border-radius:9999px;font-weight:700;line-height:1;letter-spacing:.01em;background:var(--sqs-color-primary,#1a73e8);color:#fff;border:none;";
+  
+      html += "<div style=\"margin:0 0 12px 0;\"><a id=\"google-cal-btn\" href=\"#\" style=\"" + btnFilled + "\">Add to Google Calendar</a></div>";
+      html += "<div style=\"margin:0 0 12px 0;\"><a id=\"apple-cal-btn\" href=\"#\" style=\"" + btnFilled + "\">Apple Calendar / Outlook / Other Apps</a></div>";
+      html += "<div style=\"margin:0 0 6px 0;\"><a id=\"download-ics-btn\" href=\"#\" style=\"" + btnFilled + "\">Download ICS File</a></div>";
+      html += "<div style=\"text-align:center;margin-top:12px;\"><a id=\"cancel-btn\" href=\"#\" style=\"color:var(--sqs-color-text-medium,#64748b);text-decoration:underline;\">Cancel</a></div>";
+  
+      content.innerHTML = html;
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+  
+      // GOOGLE: Add by URL
+      content.querySelector("#google-cal-btn").addEventListener("click", function () {
+        var httpsCID  = encodeURIComponent(httpsUrl);
+        var url1 = "https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=" + httpsCID;
+        var win = window.open(url1, "_blank");
+        setTimeout(function(){
+          try {
+            var url2 = "https://calendar.google.com/calendar/u/0/r?cid=" + httpsCID;
+            if (win && !win.closed) { win.location.href = url2; }
+            else { window.open(url2, "_blank"); }
+          } catch(e){}
+        }, 800);
+        document.body.removeChild(modal);
       });
-      window.addEventListener('blur', cancel, { once:true });
-      window.addEventListener('pagehide', cancel, { once:true });
-
-      // try webcal
-      try { window.location.href = webcalHref; } catch(e){}
-      return false;
-    }, { passive:false });
-  }
-
-  function scan(){
-    document.querySelectorAll('a[href]').forEach(a => { if (isO365IcsLink(a)) wireWebcal(a); });
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan); else scan();
-  new MutationObserver(scan).observe(document.body, { childList:true, subtree:true });
-})();
-</script>
+  
+      // Apple/Outlook
+      content.querySelector("#apple-cal-btn").addEventListener("click", function () {
+        try {
+          window.location.href = webcalUrl;
+          setTimeout(function () { if (!document.hidden) window.location.href = httpsUrl; }, 1200);
+        } catch (e) { window.location.href = httpsUrl; }
+        document.body.removeChild(modal);
+      });
+  
+      // Download
+      content.querySelector("#download-ics-btn").addEventListener("click", function () {
+        window.location.href = httpsUrl;
+        document.body.removeChild(modal);
+      });
+  
+      // Cancel
+      content.querySelector("#cancel-btn").addEventListener("click", function () { document.body.removeChild(modal); });
+      modal.addEventListener("click", function (e) { if (e.target === modal) document.body.removeChild(modal); });
+    }
+  
+    function wireWebcal(a){
+      if (!a || a.dataset.webcalWired === "1") return;
+      a.dataset.webcalWired = "1";
+      a.setAttribute("data-no-route","true");
+      a.removeAttribute("target");
+      const httpsHref  = a.href;
+      const webcalHref = httpsHref.replace(/^https?:\/\//,"webcal://");
+      a.href = webcalHref;
+      a.addEventListener("click", function(ev){
+        ev.preventDefault();
+        showCalendarChoiceDialog(webcalHref, httpsHref);
+        return false;
+      }, { passive:false });
+    }
+  
+    function wireSubscribeTrigger(el){
+      if (!el || el.dataset.calendarWired === "1") return;
+      el.dataset.calendarWired = "1";
+      el.addEventListener("click", function(ev){
+        ev.preventDefault();
+        const attrHttps = el.getAttribute("data-ics") || el.getAttribute("data-ics-https") || DEFAULT_ICS_HTTPS;
+        const attrWebcal = el.getAttribute("data-ics-webcal") || attrHttps.replace(/^https?:\/\//,"webcal://");
+        showCalendarChoiceDialog(attrWebcal, attrHttps);
+        return false;
+      }, { passive:false });
+    }
+  
+    function scan(){
+      document.querySelectorAll("a[href]").forEach(function(a){
+        if (isO365IcsLink(a)) wireWebcal(a);
+      });
+      document.querySelectorAll("[data-calendar-subscribe]").forEach(function(el){ wireSubscribeTrigger(el); });
+    }
+  
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan); else scan();
+    new MutationObserver(scan).observe(document.body, { childList:true, subtree:true });
+  })();
+  </script>
