@@ -37,5 +37,5 @@ jobs:
       - name: Deploy to Sanity
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
-        run: unset npm_config_devdir 2>/dev/null; npx sanity deploy
+        run: unset npm_config_devdir 2>/dev/null; npx sanity deploy --yes
         if: success()

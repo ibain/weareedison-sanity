@@ -1,5 +1,5 @@
 import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure' // ✅ v4
+import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemas'
 import {structure} from './deskStructure' // your file below
@@ -14,7 +14,7 @@ export default defineConfig({
   icon: StudioIcon,
   theme: edisonTheme,
   plugins: [
-    structureTool({structure}), // ✅ pass the resolver here
+    structureTool({structure}),
     visionTool(),               // optional
   ],
   schema: {types: schemaTypes},

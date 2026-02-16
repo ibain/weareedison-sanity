@@ -259,7 +259,14 @@ This project is transitioning from SquareSpace's built-in content management to 
   Pushing and merging runs tests and (on `main`) deploy. Renovate keeps dependencies updated. Use `npm run fix` only when CI fails on audit.
 
 - **"npm warn Unknown env config \"devdir\""**  
-  Something in your environment (e.g. shell profile or another package manager) sets `npm_config_devdir`. CI unsets it so the warning does not appear there. Locally, for the current terminal run `unset npm_config_devdir`. To stop it permanently, find where it’s set (e.g. `grep -r devdir ~/.zshrc ~/.bashrc ~/.npmrc 2>/dev/null`) and remove or comment out that line.
+  Something in your environment (e.g. shell profile or another package manager) sets `npm_config_devdir`. CI unsets it so the warning does not appear there. Locally, for the current terminal run `unset npm_config_devdir`. To stop it permanently, find where it’s set (e.g. `grep -r devdir ~/.zshrc ~/.bashrc ~/.npmrc 2>/dev/null`)   and remove or comment out that line.
+
+- **"npm warn EBADENGINE Unsupported engine"**  
+  Some dependencies (e.g. jsdom, eslint-visitor-keys) declare supported Node versions like `^20.19.0 || ^22.12.0 || >=24` and do not yet list Node 23. If you're on Node 23, npm warns. **Fix:** Use Node 20 LTS or 22 LTS. CI already uses Node 20. Locally run `nvm use` (this repo has `.nvmrc` set to `20`) or install Node 20 from [nodejs.org](https://nodejs.org/). The project's `package.json` has `"engines": { "node": ">=20.19.0" }` to document the requirement.
+
+### Why the build is still "success" with warnings
+- **devdir** and **EBADENGINE** are npm warnings only; they do not stop the build or tests. We treat success as "lint, build, test, and deploy all complete."
+- We've reduced warnings where we can: **devdir** is unset in CI; **EBADENGINE** is avoided by using Node 20 in CI and by documenting Node 20/22 locally (and providing `.nvmrc`). For a clean log locally, use Node 20 or 22 and unset `npm_config_devdir`.
 
 ## 🆘 Troubleshooting
 
@@ -268,6 +275,8 @@ This project is transitioning from SquareSpace's built-in content management to 
 2. **Events not showing**: Check "Publish" status
 3. **Slider not updating**: Verify "Show on home slider" is checked
 4. **Links not working**: Ensure URLs start with `http://` or `https://`
+5. **Deploy ran but I don't see the update**: In GitHub → Actions, open the **Deploy** workflow for that push and confirm the **Deploy to Sanity** step completed successfully (not skipped). If it was skipped, an earlier step (lint/build/audit) failed. If the step failed, check the log for auth or network errors; ensure `SANITY_AUTH_TOKEN` is set in the repo secrets.
+6. **"Not fully compatible with dashboard"**: Shown by Sanity's dashboard (sanity.io). You can keep using the Studio directly at **https://weareedison.sanity.studio** (or **https://weareedison.sanity.studio/default**). For full compatibility, ensure one successful `sanity deploy` has run (e.g. from the Deploy workflow) and that the project uses Sanity Studio v3.88.1+ (this repo uses v5). To hide the message you can disable Dashboard in [Sanity Manage](https://www.sanity.io/manage) → your organization → Settings → turn off "Dashboard is enabled".
 
 ### Getting Help:
 - Check this README first
