@@ -2,6 +2,8 @@ export default {
   name: 'garden',
   type: 'document',
   title: 'Garden',
+  // Hide the big document heading so we don't show "Untitled" – "Page name" (Garden) is the only title
+  __experimental_formPreviewTitle: false,
   fields: [
     {
       name: 'title',
@@ -73,7 +75,8 @@ export default {
   preview: {
     select: { title: 'title' },
     prepare({ title }: { title?: string }) {
-      return { title: title || 'Garden', subtitle: 'Intro, What\'s Going On & FAQ' }
+      const name = (title && String(title).trim()) ? String(title).trim() : 'Garden'
+      return { title: name, subtitle: 'Intro, What\'s Going On & FAQ' }
     },
   },
 }

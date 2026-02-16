@@ -41,6 +41,7 @@ export const structure: StructureResolver = (S) =>
           S.document()
             .schemaType('garden')
             .documentId('garden')
+            .title('Garden')
         ),
       ...S.documentTypeListItems().filter((li) => {
         const id = li.getId()
