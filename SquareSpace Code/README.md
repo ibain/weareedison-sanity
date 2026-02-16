@@ -107,11 +107,21 @@ Note: Calendar subscription is now handled globally (see `global-header-injectio
 
 **Files and deployment:**
 - `garden-intro-code-block.html` – Renders the intro text. **Deployment**: Code Block 1 on Garden page.
-- `garden-whats-going-on-code-block.html` – Renders the list of paragraphs. **Deployment**: Code Block 2 on Garden page.
+- `garden-whats-going-on-code-block.html` – Renders the grid of cards (optional image, title/icon, text). **Deployment**: Code Block 2 on Garden page.
 - `garden-faq-code-block.html` – Renders FAQ title and answer for each item. **Deployment**: Code Block 3 on Garden page.
 - `garden-page-header-injection.html` – Optional CSS for the three sections. **Deployment**: Page Header Code Injection on Garden page only.
 
-**What they do:** Each block fetches the single Garden document from Sanity and renders its section. Content is managed in Sanity under **Garden** (intro, What's Going On, FAQ).
+**What they do:** Each block fetches the single Garden document from Sanity and renders its section. Content is managed in Sanity under **Garden** (intro, What's Going On with optional image per item, FAQ).
+
+**Using Sanity content inside an existing Squarespace block (e.g. Summary block with columns / “show image”):**  
+If you want the What's Going On section to use a Squarespace block you already have (so you can set columns, “show image”, etc. in the block settings):
+
+1. Add that block to the Garden page and configure columns / show image as desired.
+2. Turn on **Developer Mode**: Settings → Advanced → Developer Mode (so you can inspect the page).
+3. Publish the page, then **inspect the block** in the browser (right‑click the block content → Inspect). Note:
+   - The **container** that wraps all items (e.g. `.summary-item-list`, `.sqs-gallery-block-grid`, etc.).
+   - For each **item**: the wrapper class (e.g. `.summary-item`), and the classes for **image** (e.g. `.summary-thumbnail`), **title** (e.g. `.summary-title`), and **text/excerpt** (e.g. `.summary-excerpt`).
+4. Share those class names (container, item, image, title, text). The What's Going On code can then be updated to output the same structure so the block’s CSS and layout (including columns) apply to Sanity content. Until then, the current code uses its own grid and classes (see `garden-page-header-injection.html`).
 
 ### `app-page-code-block.html`
 **Purpose**: Provides smart redirect to the App Store/Google Play with a graceful return.

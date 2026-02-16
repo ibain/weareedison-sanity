@@ -16,25 +16,40 @@ export default {
       name: 'whatsGoingOn',
       type: 'array',
       title: "What's Going On",
-      description: 'List of paragraphs for the What\'s Going On section (displayed in order).',
+      description: 'Cards with a title/icon and text. Renders in a grid (columns set in Squarespace).',
       of: [
         {
           type: 'object',
-          name: 'paragraphItem',
-          title: 'Paragraph',
+          name: 'whatsGoingOnItem',
+          title: 'Item',
           fields: [
+            {
+              name: 'title',
+              type: 'string',
+              title: 'Title or icon',
+              description: 'Short label or symbol (e.g. ★) shown above the text.',
+              rows: 1,
+            },
+            {
+              name: 'image',
+              type: 'image',
+              title: 'Image (optional)',
+              description: 'Optional image for this card. Cropped to a consistent size on the site.',
+              options: { hotspot: true, accept: 'image/*' },
+            },
             {
               name: 'paragraph',
               type: 'text',
-              title: 'Paragraph',
+              title: 'Text',
               rows: 3,
             },
           ],
           preview: {
-            select: { paragraph: 'paragraph' },
-            prepare({ paragraph }: { paragraph?: string }) {
-              const text = paragraph || '(empty)'
-              return { title: text.slice(0, 60) + (text.length > 60 ? '…' : '') }
+            select: { title: 'title', paragraph: 'paragraph', media: 'image' },
+            prepare({ title, paragraph, media }: { title?: string; paragraph?: string; media?: unknown }) {
+              const t = title && String(title).trim() ? title : '(no title)'
+              const p = paragraph || ''
+              return { title: t, subtitle: p.slice(0, 50) + (p.length > 50 ? '…' : ''), media }
             },
           },
         },

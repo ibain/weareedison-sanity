@@ -1,33 +1,63 @@
-<!-- Garden What's Going On (Sanity) – list of paragraphs -->
+<!--
+  Garden What's Going On (Sanity) – outputs User Items List structure so it matches
+  the Squarespace block (user-items-list-item-container, list-item, etc.).
+  Optional image per item; when present, image is output first (media-first). Set
+  NUM_COLUMNS to match your block (e.g. 3).
+-->
 <div id="sanity-garden-whats-going-on"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
-  const GROQ = `*[_type == "garden"][0]{ "items": whatsGoingOn[].paragraph }`;
+  const GROQ = `*[_type == "garden"][0]{ "items": whatsGoingOn[]{ title, paragraph, "imageUrl": image.asset->url, "imageAlt": image.alt } }`;
+  var IMAGE_WIDTH = 400;
+  var IMAGE_HEIGHT = 300;
+  var NUM_COLUMNS = 3;
+  var GRID_GAP = '100px';
 
   async function fetchGarden() {
-    const res = await fetch(SANITY_URL, {
+    var res = await fetch(SANITY_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ query: GROQ })
     });
     if (!res.ok) throw new Error('Sanity query failed');
-    const { result } = await res.json();
-    return result;
+    var json = await res.json();
+    return json.result;
+  }
+
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function imageUrl(url) {
+    if (!url) return '';
+    var sep = url.indexOf('?') >= 0 ? '&' : '?';
+    return url + sep + 'auto=format&fit=crop&w=' + IMAGE_WIDTH + '&h=' + IMAGE_HEIGHT;
   }
 
   function render(data) {
-    const root = document.getElementById('sanity-garden-whats-going-on');
+    var root = document.getElementById('sanity-garden-whats-going-on');
     if (!data || !data.items || !data.items.length) {
       root.innerHTML = '';
       return;
     }
-    var html = '<ul class="sanity-garden-whats-going-on__list">';
-    data.items.forEach(function (paragraph) {
-      if (paragraph == null || paragraph === '') return;
-      var safe = String(paragraph).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-      html += '<li class="sanity-garden-whats-going-on__item">' + safe + '</li>';
+    var listStyle = 'grid-gap: ' + GRID_GAP + ' ' + GRID_GAP + ';';
+    var html = '<ul class="user-items-list-item-container user-items-list-simple" style="' + listStyle + '" data-controller="UserItemsListSimple" data-num-columns="' + NUM_COLUMNS + '" data-content-order="media-first">';
+    data.items.forEach(function (item) {
+      var rawText = item && (item.paragraph != null && item.paragraph !== '') ? String(item.paragraph) : '';
+      var text = escapeHtml(rawText).replace(/\n/g, '<br>');
+      var title = item && item.title != null && String(item.title).trim() !== '' ? escapeHtml(item.title) : '';
+      var imgUrl = item && item.imageUrl ? imageUrl(item.imageUrl) : '';
+      var imgAlt = item && item.imageAlt != null ? escapeHtml(item.imageAlt) : (title || '');
+      if (!text && !title && !imgUrl) return;
+      html += '<li class="list-item" data-is-card-enabled="false">';
+      if (imgUrl) html += '<div class="list-item-media-inner" data-aspect-ratio="4:3" data-animation-role="image"><img class="list-image" src="' + imgUrl + '" alt="' + imgAlt + '" width="' + IMAGE_WIDTH + '" height="' + IMAGE_HEIGHT + '" loading="lazy" decoding="async" style="display:block;object-position:50% 50%;" /></div>';
+      html += '<div class="list-item-content"><div class="list-item-content__text-wrapper">';
+      if (title) html += '<h2 class="list-item-content__title" style="max-width: 75%;">' + title + '</h2>';
+      if (text) html += '<div class="list-item-content__description" style="margin-top: 4%; max-width: 75%;"><p style="white-space:pre-wrap;">' + text + '</p></div>';
+      html += '</div></div></li>';
     });
     html += '</ul>';
     root.innerHTML = html;
@@ -36,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchGarden().then(render).catch(function (err) {
     console.error(err);
     var root = document.getElementById('sanity-garden-whats-going-on');
-    root.innerHTML = '<p>What\'s Going On could not be loaded.</p>';
+    if (root) root.innerHTML = '<p>What\'s Going On could not be loaded.</p>';
   });
 });
 </script>
