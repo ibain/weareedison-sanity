@@ -2,17 +2,9 @@ export default {
   name: 'garden',
   type: 'document',
   title: 'Garden',
-  // Hide the big document heading so we don't show "Untitled" – "Page name" (Garden) is the only title
+  // Hide the big document heading; the doc is always "Garden" in the Studio
   __experimental_formPreviewTitle: false,
   fields: [
-    {
-      name: 'title',
-      type: 'string',
-      title: 'Page name',
-      description: 'Name used in the Studio (e.g. in the tab). Does not appear on the website.',
-      initialValue: 'Garden',
-      validation: (R: any) => R.required(),
-    },
     {
       name: 'intro',
       type: 'text',
@@ -73,10 +65,8 @@ export default {
     },
   ],
   preview: {
-    select: { title: 'title' },
-    prepare({ title }: { title?: string }) {
-      const name = (title && String(title).trim()) ? String(title).trim() : 'Garden'
-      return { title: name, subtitle: 'Intro, What\'s Going On & FAQ' }
+    prepare() {
+      return { title: 'Garden', subtitle: 'Intro, What\'s Going On & FAQ' }
     },
   },
 }
