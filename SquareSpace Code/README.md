@@ -9,6 +9,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - App install page → Code Block on App page → `app-page-code-block.html`
 - Global features → Site Header Code Injection → `global-header-injection.html`
 - **Garden page**: Intro → Code Block 1 → `garden-intro-code-block.html`; What's Going On → Code Block 2 → `garden-whats-going-on-code-block.html`; FAQ → Code Block 3 → `garden-faq-code-block.html`; optional styles → Page Header → `garden-page-header-injection.html`
+- **Garden Plants page** (`/garden-plants`) → Page Header → `garden-plants-header-injection.html`; Code Block → `garden-plants-code-block.html`
 
 ## 📋 File Overview
 
@@ -28,6 +29,10 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - **`garden-whats-going-on-code-block.html`** - Renders the What's Going On list (Code Block 2)
 - **`garden-faq-code-block.html`** - Renders the FAQ section (Code Block 3)
 - **`garden-page-header-injection.html`** - Optional CSS for Garden page sections (Page Header Code Injection)
+
+### 🌿 Garden Plants Index
+- **`garden-plants-code-block.html`** - A–Z plant index (image, title, description) with `#slug` deep links
+- **`garden-plants-header-injection.html`** - CSS for the plants index page
 
 ### 🌐 Global Files
 - **`global-header-injection.html`** - Global functionality (calendar links, etc.)
@@ -69,6 +74,14 @@ Use three Code Blocks and optional Page Header for styling.
 4. **Code Block 2 (What's Going On)**: Add a second Code Block, copy contents of `garden-whats-going-on-code-block.html`, paste, save.
 5. **Code Block 3 (FAQ)**: Add a third Code Block, copy contents of `garden-faq-code-block.html`, paste, save.
 6. Save the page.
+
+### Step 2d: Garden Plants Index (`/garden-plants`)
+A–Z plant directory with QR deep links (`/garden-plants#slug`).
+1. Create a SquareSpace page with URL slug `garden-plants` (live URL: https://www.weareedison.org/garden-plants).
+2. **Page Header Code Injection**: Copy contents of `garden-plants-header-injection.html` into Page Settings → Advanced → Page Header Code Injection.
+3. **Code Block**: Add a Code Block, copy contents of `garden-plants-code-block.html`, paste, save.
+4. Publish the page.
+5. In Sanity Studio → **Garden Plants**: add plants, Generate slug, then use **Plant tag QR** to download PNG or copy the link for physical tags.
 
 ### Step 3: Global Features
 1. Go to SquareSpace Dashboard → Settings → Advanced → Code Injection
@@ -112,6 +125,15 @@ Note: Calendar subscription is now handled globally (see `global-header-injectio
 - `garden-page-header-injection.html` – Optional CSS for the three sections. **Deployment**: Page Header Code Injection on Garden page only.
 
 **What they do:** Each block fetches the single Garden document from Sanity and renders its section. Content is managed in Sanity under **Garden** (intro, What's Going On with optional image per item, FAQ).
+
+### Garden Plants index
+**Purpose**: A–Z index of garden plants from Sanity (`gardenPlant` documents).
+
+**Files and deployment:**
+- `garden-plants-code-block.html` – Fetches enabled plants ordered by title, renders image/title/description, scrolls to `#slug` when present. **Deployment**: Code Block on `/garden-plants`.
+- `garden-plants-header-injection.html` – Layout + hash-target highlight. **Deployment**: Page Header on `/garden-plants` only.
+
+**QR tags:** Generated in Sanity Studio on each plant (not on the public page). Public URL format: `https://www.weareedison.org/garden-plants#{slug}`.
 
 **Using Sanity content inside an existing Squarespace block (e.g. Summary block with columns / “show image”):**  
 If you want the What's Going On section to use a Squarespace block you already have (so you can set columns, “show image”, etc. in the block settings):

@@ -1,0 +1,68 @@
+<style>
+  /* Garden Plants A–Z index — scoped; theme tokens where possible */
+
+  #sanity-garden-plants {
+    display: grid;
+    gap: 48px;
+  }
+
+  #sanity-garden-plants article {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.9fr) 1.4fr;
+    gap: 32px;
+    align-items: start;
+    scroll-margin-top: 96px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  #sanity-garden-plants article.is-target {
+    background: color-mix(in srgb, var(--sqs-site-theme-color, #f5e6a8) 28%, transparent);
+    box-shadow: 0 0 0 2px var(--sqs-site-theme-color, #c9b227);
+  }
+
+  #sanity-garden-plants figure {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    aspect-ratio: 1 / 1;
+    margin: 0;
+    background: var(--sqs-color-text-medium, #e2e8f0);
+  }
+
+  #sanity-garden-plants figure.no-image {
+    min-height: 120px;
+  }
+
+  #sanity-garden-plants figure img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  #sanity-garden-plants h3 {
+    margin: 0 0 12px 0;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  #sanity-garden-plants p {
+    margin: 0 0 12px 0;
+    color: var(--sqs-color-text-medium, inherit);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 860px) {
+    #sanity-garden-plants article {
+      grid-template-columns: 1fr;
+    }
+    #sanity-garden-plants figure {
+      max-width: 360px;
+    }
+  }
+</style>

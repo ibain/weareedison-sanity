@@ -44,6 +44,13 @@ export const structure: StructureResolver = (S) =>
             .title('Garden')
         ),
       S.listItem()
+        .title('Garden Plants')
+        .child(
+          S.documentTypeList('gardenPlant')
+            .title('Garden Plants')
+            .defaultOrdering([{field: 'title', direction: 'asc'}])
+        ),
+      S.listItem()
         .title('Meeting Settings')
         .child(
           S.document()
@@ -53,6 +60,11 @@ export const structure: StructureResolver = (S) =>
         ),
       ...S.documentTypeListItems().filter((li) => {
         const id = li.getId()
-        return id !== 'events' && id !== 'garden' && id !== 'meetingSettings'
+        return (
+          id !== 'events' &&
+          id !== 'garden' &&
+          id !== 'gardenPlant' &&
+          id !== 'meetingSettings'
+        )
       }),
     ])

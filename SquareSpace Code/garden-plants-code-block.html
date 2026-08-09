@@ -1,0 +1,92 @@
+<!-- Garden Plants (Sanity) – A–Z index with hash deep links -->
+<section id="sanity-garden-plants"></section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  const GROQ = `
+    *[_type=="gardenPlant" && enabled != false && defined(slug.current)]
+      | order(title asc){
+        title, "slug": slug.current, description,
+        "img": image.asset->url, "alt": coalesce(image.alt, title)
+      }
+  `;
+
+  const imgUrl = (u, w = 900, h = 900) =>
+    u ? `${u}?auto=format&fit=crop&w=${w}&h=${h}` : '';
+
+  const esc = (s) =>
+    String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const nl2br = (s) => esc(s).replace(/\n/g, '<br>');
+
+  async function fetchPlants() {
+    const res = await fetch(SANITY_URL, {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({query: GROQ}),
+    });
+    if (!res.ok) throw new Error('Sanity query failed');
+    const {result = []} = await res.json();
+    return result;
+  }
+
+  function highlightFromHash() {
+    const hash = (location.hash || '').replace(/^#/, '');
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (!el) return;
+    el.classList.add('is-target');
+    el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }
+
+  function render(list) {
+    const root = document.getElementById('sanity-garden-plants');
+    if (!list.length) {
+      root.innerHTML = '<p>No garden plants yet.</p>';
+      return;
+    }
+
+    root.innerHTML = list
+      .map((plant) => {
+        const slug = plant.slug || '';
+        const title = esc(plant.title || '');
+        const alt = esc(plant.alt || plant.title || '');
+        const desc = plant.description ? `<p>${nl2br(plant.description)}</p>` : '';
+        const figure = plant.img
+          ? `<figure><img src="${imgUrl(plant.img)}" alt="${alt}" loading="lazy" /></figure>`
+          : '<figure class="no-image"></figure>';
+
+        return `
+          <article id="${esc(slug)}">
+            ${figure}
+            <div class="content">
+              <h3>${title}</h3>
+              ${desc}
+            </div>
+          </article>
+        `;
+      })
+      .join('');
+
+    // Allow layout/paint, then scroll to hash target
+    requestAnimationFrame(() => {
+      highlightFromHash();
+    });
+  }
+
+  fetchPlants()
+    .then(render)
+    .catch((err) => {
+      console.error(err);
+      const root = document.getElementById('sanity-garden-plants');
+      root.innerHTML = '<p>Sorry, garden plants failed to load.</p>';
+    });
+
+  window.addEventListener('hashchange', highlightFromHash);
+});
+</script>

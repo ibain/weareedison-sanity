@@ -13,15 +13,17 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - **Events**: Add, edit, and organize upcoming events
 - **Evergreen Slides**: Create slides for the home page carousel
 - **Garden**: Edit the Garden page (intro, What's Going On list, FAQ)
+- **Garden Plants**: A–Z plant index (photo, title, description) + downloadable QR tags
 - **Meeting Settings**: PTA Zoom meeting number / notes for browser join (meet.weareedison.org)
 - **Images**: Upload and crop images to the correct size
 
 ### 3. Basic Workflow
 1. Go to https://weareedison.sanity.studio/
-2. Click "Events", "Evergreen Slides", "Garden", or "Meeting Settings" in the left sidebar
+2. Click "Events", "Evergreen Slides", "Garden", "Garden Plants", or "Meeting Settings" in the left sidebar
 3. Click "Create new" to add content
 4. Fill in the required fields (marked with *)
 5. Click "Publish" when ready
+6. For plants: open **Garden Plants**, Generate slug, then download the QR (or copy the link) for physical tags
 
 ## ✅ If You're Not Technical, Start Here
 
@@ -40,6 +42,7 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - App install page → Code Block on App page (e.g., "/app") → `SquareSpace Code/app-page-code-block.html`
 - Global features → Settings → Advanced → Code Injection → Site Header → `SquareSpace Code/global-header-injection.html`
 - Garden page → Three Code Blocks (Intro, What's Going On, FAQ) + optional Page Header → see `SquareSpace Code/README.md` (Garden section)
+- Garden Plants page → Page Header + Code Block on `/garden-plants` → `garden-plants-header-injection.html` + `garden-plants-code-block.html`
 
 ### App install page (what to expect)
 - Automatically sends visitors to the correct app store
@@ -107,6 +110,23 @@ This is the content management system (CMS) for the We Are Edison website. It al
 
 **Deployment on Squarespace:** Use three Code Blocks for Intro, What's Going On, and FAQ, plus optional Page Header for CSS. See `SquareSpace Code/README.md` for file names and placement.
 
+### Garden Plants
+**Purpose**: Alphabetized plant index on `/garden-plants`, with QR codes for physical garden tags.
+
+**Required Fields:**
+- **Title**: Common plant name
+- **Slug**: Generate from title (used in URL `#slug` and QR)
+
+**Optional Fields:**
+- **Description**: Plant blurb shown on the website
+- **Image**: Plant photo + accessibility description
+- **Enabled**: Uncheck to hide without deleting
+- **Plant tag QR**: Download PNG or copy the public link (Studio only)
+
+**Sorting:** Always A–Z by title on the website and in the Studio list.
+
+**Deployment on Squarespace:** Create page `/garden-plants`, paste header CSS + code block. See `SquareSpace Code/README.md` (Garden Plants section).
+
 ## 🖼️ Image Guidelines
 
 ### Required Image Format
@@ -141,6 +161,7 @@ This is the content management system (CMS) for the We Are Edison website. It al
 ### Current Website URLs
 - **Live Site**: https://www.weareedison.org
 - **Events Page**: https://www.weareedison.org/events
+- **Garden Plants**: https://www.weareedison.org/garden-plants (deep link: `#slug`)
 - **Test Pages**: 
   - `/sandbox/home-wip` (home slider test)
   - `/sandbox/events-wip` (events page test)
@@ -188,13 +209,18 @@ weareedison-sanity/
 ├── schemas/           # Content type definitions
 │   ├── events.ts     # Events schema
 │   ├── garden.ts     # Garden page schema
+│   ├── gardenPlant.ts # Garden plants index schema
 │   └── slide.ts      # Evergreen slides schema
+├── components/        # Studio UI (icon, plant QR field)
+├── lib/site.ts        # Public site URL helpers for QR links
 ├── SquareSpace Code/ # Frontend integration code
 │   ├── app-page-code-block.html          # App install/redirect page code
 │   ├── events-page-code-block.html       # Events page script
 │   ├── events-page-header-injection.html # Events page CSS
 │   ├── garden-*-code-block.html          # Garden Intro, What's Going On, FAQ
 │   ├── garden-page-header-injection.html # Garden page CSS (optional)
+│   ├── garden-plants-code-block.html     # Garden plants A–Z index
+│   ├── garden-plants-header-injection.html # Garden plants CSS
 │   ├── slider-page-ready.js              # Home slider script
 │   └── global-header-injection.html      # Global functionality
 ├── sanity.config.ts  # Sanity configuration
@@ -210,6 +236,8 @@ The `SquareSpace Code/` folder contains scripts that integrate Sanity content in
 - **`app-page-code-block.html`**: App install/redirect page script (goes in Code Block)
 - **`events-page-code-block.html`**: Script for the events page (goes in Code Block)
 - **`events-page-header-injection.html`**: CSS styling for events page (goes in Page Header)
+- **`garden-plants-code-block.html`**: A–Z plant index script (goes in Code Block on `/garden-plants`)
+- **`garden-plants-header-injection.html`**: Plant index CSS (goes in Page Header on `/garden-plants`)
 - **`slider-page-ready.js`**: Script for home page carousel (goes in Code Block)
 - **`global-header-injection.html`**: Global functionality (goes in Site Header)
 
