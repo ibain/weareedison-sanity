@@ -15,14 +15,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
         run: unset npm_config_devdir 2>/dev/null; npm ci
 
+      # May exit 1 when leftover transitive issues remain; final Audit step is the gate
       - name: Apply security fixes
-        run: unset npm_config_devdir 2>/dev/null; npm audit fix
+        run: unset npm_config_devdir 2>/dev/null; npm audit fix || true
 
       - name: Lint
         run: unset npm_config_devdir 2>/dev/null; npm run lint
