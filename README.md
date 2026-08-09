@@ -13,11 +13,12 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - **Events**: Add, edit, and organize upcoming events
 - **Evergreen Slides**: Create slides for the home page carousel
 - **Garden**: Edit the Garden page (intro, What's Going On list, FAQ)
+- **Meeting Settings**: PTA Zoom meeting number / notes for browser join (meet.weareedison.org)
 - **Images**: Upload and crop images to the correct size
 
 ### 3. Basic Workflow
 1. Go to https://weareedison.sanity.studio/
-2. Click "Events", "Evergreen Slides", or "Garden" in the left sidebar
+2. Click "Events", "Evergreen Slides", "Garden", or "Meeting Settings" in the left sidebar
 3. Click "Create new" to add content
 4. Fill in the required fields (marked with *)
 5. Click "Publish" when ready

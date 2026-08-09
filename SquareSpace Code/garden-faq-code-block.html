@@ -1,51 +1,94 @@
-<!-- Garden FAQ (Sanity) -->
+<!--
+  Garden FAQ (Sanity) – accordion from Sanity.
+  No theme accordion classes (they break header/form/video). Styled via header injection using --sanity-faq-accent so you can match the section in one place.
+-->
 <div id="sanity-garden-faq"></div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
-  const GROQ = `*[_type == "garden"][0]{ "items": faq[]{ title, content } }`;
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+  var SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
+  var GROQ = '*[_type == "garden"][0]{ "items": faq[]{ title, content } }';
 
   async function fetchGarden() {
-    const res = await fetch(SANITY_URL, {
+    var res = await fetch(SANITY_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ query: GROQ })
     });
     if (!res.ok) throw new Error('Sanity query failed');
-    const { result } = await res.json();
-    return result;
+    var json = await res.json();
+    return json.result;
   }
 
   function escapeHtml(str) {
     if (str == null) return '';
-    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+    return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  var buttonStyle = 'padding-top:30px;padding-bottom:30px;padding-left:0;padding-right:0;';
+  var titleStyle = 'padding-right:24px;';
+  var iconStyle = 'height:24px;width:24px;';
+  var dividerStyle = 'height:1px;opacity:1;';
+  var descStyle = 'padding-top:0;padding-bottom:30px;padding-left:0;padding-right:0;min-width:70%;max-width:300px;';
+  var arrowIcon = '<div class="arrow-container"><div class="arrow" style="border-width:3px;"></div></div>';
+
+  var ulAttrs = 'class="accordion-items-container" data-should-allow-multiple-open-items="" data-is-divider-enabled="true" data-is-first-divider-visible="true" data-is-last-divider-visible="true" data-is-expanded-first-item="" data-accordion-title-alignment="left" data-accordion-description-alignment="left" data-accordion-description-placement="left" data-accordion-icon-placement="right"';
+
   function render(data) {
-    const root = document.getElementById('sanity-garden-faq');
+    var root = document.getElementById('sanity-garden-faq');
+    if (!root) return;
     if (!data || !data.items || !data.items.length) {
       root.innerHTML = '';
       return;
     }
-    var html = '<div class="sanity-garden-faq__list">';
-    data.items.forEach(function (item) {
+    var html = '<ul ' + ulAttrs + '>';
+    data.items.forEach(function (item, i) {
       if (!item || !item.title) return;
       var title = escapeHtml(item.title);
-      var content = item.content ? escapeHtml(item.content) : '';
-      html += '<div class="sanity-garden-faq__item">';
-      html += '<h3 class="sanity-garden-faq__title">' + title + '</h3>';
-      if (content) html += '<div class="sanity-garden-faq__content">' + content + '</div>';
+      var content = item.content ? escapeHtml(String(item.content)).replace(/\n/g, '<br>') : '';
+      var btnId = 'sanity-faq-btn-' + i;
+      var panelId = 'sanity-faq-panel-' + i;
+      var isFirst = i === 0;
+      var isOpen = false;
+      html += '<li class="accordion-item" data-is-open="' + isOpen + '">';
+      if (isFirst) html += '<div class="accordion-divider accordion-divider--top" aria-hidden="true" style="' + dividerStyle + '"></div>';
+      html += '<h4 class="accordion-item__title-wrapper" role="heading" aria-level="3">';
+      html += '<button type="button" class="accordion-item__click-target" aria-expanded="' + isOpen + '" id="' + btnId + '" aria-controls="' + panelId + '" style="' + buttonStyle + '">';
+      html += '<span class="accordion-item__title" style="' + titleStyle + '">' + title + '</span>';
+      html += '<div class="accordion-icon-container" data-is-open="' + isOpen + '" aria-hidden="true" style="' + iconStyle + '">' + arrowIcon + '</div>';
+      html += '</button></h4>';
+      html += '<div id="' + panelId + '" class="accordion-item__dropdown' + (isOpen ? ' accordion-item__dropdown--open' : '') + '" role="region" aria-labelledby="' + btnId + '">';
+      html += '<div class="accordion-item__description" style="' + descStyle + '"><p style="white-space:pre-wrap;">' + (content || '') + '</p></div>';
       html += '</div>';
+      html += '<div class="accordion-divider" aria-hidden="true" style="' + dividerStyle + '"></div>';
+      html += '</li>';
     });
-    html += '</div>';
+    html += '</ul>';
     root.innerHTML = html;
+
+    root.querySelectorAll('.accordion-item__click-target').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var li = btn.closest('.accordion-item');
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        var icon = btn.querySelector('.accordion-icon-container');
+        var newExpanded = !expanded;
+        btn.setAttribute('aria-expanded', newExpanded);
+        if (li) li.setAttribute('data-is-open', newExpanded);
+        if (panel) panel.classList.toggle('accordion-item__dropdown--open', newExpanded);
+        if (icon) icon.setAttribute('data-is-open', newExpanded);
+      });
+    });
   }
 
   fetchGarden().then(render).catch(function (err) {
     console.error(err);
     var root = document.getElementById('sanity-garden-faq');
-    root.innerHTML = '<p>FAQ could not be loaded.</p>';
+    if (root) root.innerHTML = '<p>FAQ could not be loaded.</p>';
   });
+  } catch (e) {
+    console.error('Garden FAQ script error:', e);
+  }
 });
 </script>

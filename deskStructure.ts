@@ -43,8 +43,16 @@ export const structure: StructureResolver = (S) =>
             .documentId('garden')
             .title('Garden')
         ),
+      S.listItem()
+        .title('Meeting Settings')
+        .child(
+          S.document()
+            .schemaType('meetingSettings')
+            .documentId('meetingSettings')
+            .title('Meeting Settings')
+        ),
       ...S.documentTypeListItems().filter((li) => {
         const id = li.getId()
-        return id !== 'events' && id !== 'garden'
+        return id !== 'events' && id !== 'garden' && id !== 'meetingSettings'
       }),
     ])

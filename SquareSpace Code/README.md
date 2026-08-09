@@ -96,7 +96,7 @@ Use three Code Blocks and optional Page Header for styling.
 **What it does:**
 - Fetches all published events from Sanity
 - Displays events with correct date/time formatting
-- Handles Zoom and external link buttons
+- Handles Zoom and external link buttons (Zoom → https://meet.weareedison.org)
 
 Note: Calendar subscription is now handled globally (see `global-header-injection.html`).
 

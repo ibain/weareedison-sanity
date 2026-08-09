@@ -47,20 +47,83 @@
     margin: 0;
   }
 
-  #sanity-garden-faq .sanity-garden-faq__list {
-    margin: 0;
+  /* FAQ – inherit section gold so bars + titles + chevron match; set --sanity-faq-accent in Custom CSS to override */
+  #sanity-garden-faq {
+    color: var(--sanity-faq-accent, inherit);
+  }
+  #sanity-garden-faq .accordion-items-container {
+    list-style: none;
     padding: 0;
+    margin: 0;
+  }
+  #sanity-garden-faq .accordion-item {
     list-style: none;
   }
-  .sanity-garden-faq__item {
-    margin-bottom: 1.5em;
+  #sanity-garden-faq .accordion-item__title-wrapper {
+    margin: 0;
   }
-  .sanity-garden-faq__title {
-    margin: 0 0 0.5em 0;
-    font-size: 1.1em;
+  #sanity-garden-faq .accordion-item__click-target {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
   }
-  .sanity-garden-faq__content {
+  #sanity-garden-faq .accordion-item__title {
+    font-weight: 700;
+    color: inherit;
+  }
+  /* Yellow bars: match question text gold (inherit from section/root) */
+  #sanity-garden-faq .accordion-divider,
+  #sanity-garden-faq .accordion-divider--top {
+    background: currentColor;
+    opacity: 1;
+  }
+  #sanity-garden-faq .accordion-item__dropdown {
+    display: none;
+    overflow: hidden;
+  }
+  #sanity-garden-faq .accordion-item__dropdown--open {
+    display: block;
+  }
+  /* Body text: light gray/off-white (like events .meta and var(--sqs-color-text-medium)) */
+  #sanity-garden-faq .accordion-item__description,
+  #sanity-garden-faq .accordion-item__description p {
+    color: var(--sanity-faq-body, var(--sqs-color-text-medium, #D0D0D0));
     line-height: 1.6;
     margin: 0;
+  }
+  /* Chevron: same gold as question text (inherit) */
+  #sanity-garden-faq .accordion-icon-container {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px !important;
+    height: 36px !important;
+    color: inherit;
+  }
+  #sanity-garden-faq .arrow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #sanity-garden-faq .arrow {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-left: 3px solid currentColor;
+    border-bottom: 3px solid currentColor;
+    box-sizing: border-box;
+    transform: rotate(-45deg);
+    transition: transform 0.2s ease;
+  }
+  #sanity-garden-faq .accordion-icon-container[data-is-open="true"] .arrow {
+    transform: rotate(-45deg) rotate(180deg);
   }
 </style>
