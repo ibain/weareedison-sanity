@@ -1,5 +1,5 @@
 <style>
-  /* Garden Plants A–Z index — scoped; theme tokens where possible */
+  /* Garden Plants A–Z — scoped; theme tokens where possible */
 
   #sanity-garden-plants {
     display: grid;
@@ -45,10 +45,53 @@
   }
 
   #sanity-garden-plants h3 {
-    margin: 0 0 12px 0;
+    margin: 0 0 6px 0;
     font-weight: 800;
     text-transform: uppercase;
     font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  #sanity-garden-plants .scientific {
+    margin: 0 0 16px 0;
+    font-style: italic;
+    color: var(--sqs-color-text-medium, #64748b);
+    font-size: 1rem;
+  }
+
+  #sanity-garden-plants .facts {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 20px 0;
+  }
+
+  #sanity-garden-plants .fact {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: 8px 12px;
+    margin: 0;
+  }
+
+  #sanity-garden-plants .fact dt {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  #sanity-garden-plants .fact dd {
+    margin: 0;
+    color: var(--sqs-color-text-medium, inherit);
+  }
+
+  #sanity-garden-plants h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  #sanity-garden-plants .about,
+  #sanity-garden-plants .harvest {
+    margin: 0 0 16px 0;
   }
 
   #sanity-garden-plants p {
@@ -57,12 +100,26 @@
     line-height: 1.55;
   }
 
+  #sanity-garden-plants ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--sqs-color-text-medium, inherit);
+    line-height: 1.55;
+  }
+
+  #sanity-garden-plants li {
+    margin: 0 0 6px 0;
+  }
+
   @media (max-width: 860px) {
     #sanity-garden-plants article {
       grid-template-columns: 1fr;
     }
     #sanity-garden-plants figure {
       max-width: 360px;
+    }
+    #sanity-garden-plants .fact {
+      grid-template-columns: 6rem 1fr;
     }
   }
 </style>

@@ -7,10 +7,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const GROQ = `
     *[_type=="gardenPlant" && enabled != false && defined(slug.current)]
       | order(title asc){
-        title, "slug": slug.current, description,
+        title, titleEs, "slug": slug.current, scientificName,
+        light, spacing, water, cycle, cycleEs,
+        goodWith, goodWithEs,
+        description, descriptionEs, harvest, harvestEs,
         "img": image.asset->url, "alt": coalesce(image.alt, title)
       }
   `;
+
+  const LIGHT_LABEL = {
+    'full-sun': 'Full sun',
+    'full-sun-part-shade': 'Full sun to part shade',
+    'part-shade': 'Part shade',
+    'part-shade-full-shade': 'Part shade to full shade',
+    'full-shade': 'Full shade',
+  };
+
+  const WATER_LABEL = {
+    low: 'Low',
+    moderate: 'Moderate',
+    high: 'High',
+  };
 
   const imgUrl = (u, w = 900, h = 900) =>
     u ? `${u}?auto=format&fit=crop&w=${w}&h=${h}` : '';
@@ -23,6 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/"/g, '&quot;');
 
   const nl2br = (s) => esc(s).replace(/\n/g, '<br>');
+
+  const bullets = (s) => {
+    const lines = String(s ?? '')
+      .split(/\n+/)
+      .map((l) => l.replace(/^[\s•\-\*]+/, '').trim())
+      .filter(Boolean);
+    if (!lines.length) return '';
+    return `<ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
+  };
+
+  const fact = (label, value) =>
+    value ? `<div class="fact"><dt>${esc(label)}</dt><dd>${value}</dd></div>` : '';
 
   async function fetchPlants() {
     const res = await fetch(SANITY_URL, {
@@ -56,24 +85,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const slug = plant.slug || '';
         const title = esc(plant.title || '');
         const alt = esc(plant.alt || plant.title || '');
-        const desc = plant.description ? `<p>${nl2br(plant.description)}</p>` : '';
+        const sci = plant.scientificName
+          ? `<p class="scientific">${esc(plant.scientificName)}</p>`
+          : '';
         const figure = plant.img
           ? `<figure><img src="${imgUrl(plant.img)}" alt="${alt}" loading="lazy" /></figure>`
           : '<figure class="no-image"></figure>';
+
+        const light = LIGHT_LABEL[plant.light] || plant.light;
+        const water = WATER_LABEL[plant.water] || plant.water;
+
+        const facts = [
+          fact('Light', light ? esc(light) : ''),
+          fact('Spacing', plant.spacing ? esc(plant.spacing) : ''),
+          fact('Water', water ? esc(water) : ''),
+          fact('Cycle', plant.cycle ? esc(plant.cycle) : ''),
+          fact('Good with', plant.goodWith ? esc(plant.goodWith) : ''),
+        ]
+          .filter(Boolean)
+          .join('');
+
+        const about = plant.description
+          ? `<div class="about"><h4>About</h4><p>${nl2br(plant.description)}</p></div>`
+          : '';
+        const harvest = plant.harvest
+          ? `<div class="harvest"><h4>Harvest</h4>${bullets(plant.harvest)}</div>`
+          : '';
 
         return `
           <article id="${esc(slug)}">
             ${figure}
             <div class="content">
               <h3>${title}</h3>
-              ${desc}
+              ${sci}
+              ${facts ? `<dl class="facts">${facts}</dl>` : ''}
+              ${about}
+              ${harvest}
             </div>
           </article>
         `;
       })
       .join('');
 
-    // Allow layout/paint, then scroll to hash target
     requestAnimationFrame(() => {
       highlightFromHash();
     });

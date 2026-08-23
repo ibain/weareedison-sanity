@@ -13,7 +13,7 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - **Events**: Add, edit, and organize upcoming events
 - **Evergreen Slides**: Create slides for the home page carousel
 - **Garden**: Edit the Garden page (intro, What's Going On list, FAQ)
-- **Garden Plants**: A–Z plant index (photo, title, description) + downloadable QR tags
+- **Garden Plants**: A–Z plant index (photo, facts, about, harvest) + downloadable QR tags; optional Spanish fields for later language toggle
 - **Meeting Settings**: PTA Zoom meeting number / notes for browser join (meet.weareedison.org)
 - **Images**: Upload and crop images to the correct size
 
@@ -114,18 +114,29 @@ This is the content management system (CMS) for the We Are Edison website. It al
 **Purpose**: Alphabetized plant index on `/garden-plants`, with QR codes for physical garden tags.
 
 **Required Fields:**
-- **Title**: Common plant name
-- **Slug**: Generate from title (used in URL `#slug` and QR)
+- **Name**: Common English name
+- **Slug**: Generate from name (used in URL `#slug` and QR)
 
-**Optional Fields:**
-- **Description**: Plant blurb shown on the website
-- **Image**: Plant photo + accessibility description
-- **Enabled**: Uncheck to hide without deleting
-- **Plant tag QR**: Download PNG or copy the public link (Studio only)
+**Plant facts:**
+- **Scientific name**: Latin binomial (italic on site)
+- **Light**: dropdown — Full sun / Full sun to part shade / Part shade / Part shade to full shade / Full shade
+- **Spacing**: free text for now (e.g. `2-3 ft`) — catalogs don't share one fixed set
+- **Water**: dropdown — Low / Moderate / High
+- **Cycle**: free text growth habit (e.g. Perennial evergreen shrub)
+- **Good with**: companion plants
+- **About**: short blurb (same field as before, retitled)
+- **Harvest**: one tip per line → bullets on site
 
-**Sorting:** Always A–Z by title on the website and in the Studio list.
+**Spanish (optional, collapsed in Studio):** Name / Cycle / Good with / About / Harvest in Spanish — stored for a future browser language toggle (not dual-column; English still renders today).
 
-**Deployment on Squarespace:** Create page `/garden-plants`, paste header CSS + code block. See `SquareSpace Code/README.md` (Garden Plants section).
+**Other:**
+- **Image** + accessibility description
+- **Enabled**: uncheck to hide without deleting
+- **Plant tag QR**: download PNG or copy public link
+
+**Sorting:** Always A–Z by English name on the website and in the Studio list.
+
+**Deployment on Squarespace:** Create page `/garden-plants`, paste header CSS + code block. Re-paste after this update so new fields show. See `SquareSpace Code/README.md` (Garden Plants section).
 
 ## 🖼️ Image Guidelines
 

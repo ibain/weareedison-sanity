@@ -31,7 +31,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - **`garden-page-header-injection.html`** - Optional CSS for Garden page sections (Page Header Code Injection)
 
 ### 🌿 Garden Plants Index
-- **`garden-plants-code-block.html`** - A–Z plant index (image, title, description) with `#slug` deep links
+- **`garden-plants-code-block.html`** - A–Z plant cards (image, name, scientific name, light/spacing/water/cycle/good with, about, harvest) with `#slug` deep links
 - **`garden-plants-header-injection.html`** - CSS for the plants index page
 
 ### 🌐 Global Files
@@ -81,7 +81,8 @@ A–Z plant directory with QR deep links (`/garden-plants#slug`).
 2. **Page Header Code Injection**: Copy contents of `garden-plants-header-injection.html` into Page Settings → Advanced → Page Header Code Injection.
 3. **Code Block**: Add a Code Block, copy contents of `garden-plants-code-block.html`, paste, save.
 4. Publish the page.
-5. In Sanity Studio → **Garden Plants**: add plants, Generate slug, then use **Plant tag QR** to download PNG or copy the link for physical tags.
+5. In Sanity Studio → **Garden Plants**: add plants, Generate slug, fill facts (light/water dropdowns; spacing/cycle as text), then use **Plant tag QR** to download PNG or copy the link for physical tags. Optional Spanish fields are collapsed under **Spanish (optional)** for a future browser language toggle.
+6. After schema updates, re-paste the code block + header CSS so new fields render on the live page.
 
 ### Step 3: Global Features
 1. Go to SquareSpace Dashboard → Settings → Advanced → Code Injection
