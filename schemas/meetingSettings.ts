@@ -46,7 +46,7 @@ export default {
       type: 'string',
       title: 'When is join open?',
       description:
-        'Controls when meet.weareedison.org and the Squarespace banner allow joining.',
+        'Controls when meet.weareedison.org and the Squarespace banner allow joining. “From Events calendar” reads any event with “Open Zoom browser join for this event” checked.',
       options: {
         list: [
           {title: 'Always (manual on/off only)', value: 'always'},

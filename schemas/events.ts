@@ -52,9 +52,9 @@ export default {
       {
         name: 'browserJoinEnabled',
         type: 'boolean',
-        title: 'Enable browser join window',
+        title: 'Open Zoom browser join for this event',
         description:
-          'When checked (and Meeting Settings → schedule mode is “From Events calendar”), meet.weareedison.org opens during this event’s start/end time.',
+          'Only does anything when Meeting Settings → “When is join open?” is set to “From Events calendar”. In that mode, checking this uses this event’s start/end time as the join window, and shows the join banner on the website. Ignored in Always and Monthly recurring modes.',
         initialValue: false,
       },
       { name: 'sourceUrl', type: 'url',    title: 'Zoom / External link (optional)' },
