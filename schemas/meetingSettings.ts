@@ -38,7 +38,7 @@ export default {
       type: 'boolean',
       title: 'Browser join enabled',
       description:
-        'Master switch. When unchecked, meet.weareedison.org blocks joins even during the scheduled window.',
+        'Extra kill switch. Prefer “Off” under “When is join open?” for day-to-day control. When unchecked, joins stay blocked even if the schedule would otherwise be open.',
       initialValue: true,
     },
     {
@@ -49,7 +49,8 @@ export default {
         'Controls when meet.weareedison.org and the Squarespace banner allow joining. “From Events calendar” reads any event with “Open Zoom browser join for this event” checked.',
       options: {
         list: [
-          {title: 'Always (manual on/off only)', value: 'always'},
+          {title: 'Off (closed until you pick another mode)', value: 'off'},
+          {title: 'Always (open until you switch modes)', value: 'always'},
           {
             title: 'Monthly recurring (e.g. 2nd Thursday 6:30–8:00 PM)',
             value: 'recurring',
@@ -168,11 +169,13 @@ export default {
     }) {
       const onOff = enabled === false ? 'OFF' : 'ON'
       const mode =
-        scheduleMode === 'recurring'
-          ? 'recurring'
-          : scheduleMode === 'events'
-            ? 'events'
-            : 'always'
+        scheduleMode === 'off'
+          ? 'off'
+          : scheduleMode === 'recurring'
+            ? 'recurring'
+            : scheduleMode === 'events'
+              ? 'events'
+              : 'always'
       return {
         title: title || 'Meeting Settings',
         subtitle: meetingNumber
