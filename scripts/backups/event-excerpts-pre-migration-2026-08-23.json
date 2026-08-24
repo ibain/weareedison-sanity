@@ -1,0 +1,77 @@
+{
+  "snapshotAt": "2026-08-23T00:00:00.000Z",
+  "note": "Pre-migration backup of plain-text event excerpts before rich text conversion",
+  "count": 14,
+  "events": [
+    {
+      "_id": "1fd84f20-cd15-4ee8-881e-eba3cc6f9323",
+      "title": "Islands Dine Out",
+      "excerpt": "Islands dine out fundraiser! 20% of your bill will be donated to Edison. Dine-in only."
+    },
+    {
+      "_id": "35c171a4-06ea-4939-8ec2-86bf96aed300",
+      "title": "Edison Walk, Bike & Roll to School Day",
+      "excerpt": "Join us on Wednesday, October 1st for Walk, Bike & Roll to School Day! We’ll meet on the bike path at Chandler and Buena Vista and head to school at 8:10 AM, with younger students welcome to join near Keystone (if preferred). Families farther away can park at a designated spot and walk with us. I You Café will also be selling coffee from 7:45–9:00 AM, with a portion of sales donated to Edison PTA. Come start the day with fun, friends, and fresh air! 💙💛"
+    },
+    {
+      "_id": "3cbb7b8b-a60b-4097-8871-47e5fccf8862",
+      "title": "Back to School Foam Party & Picnic",
+      "excerpt": "Join us on the Edison Blacktop on Friday, August 21 at 5-7PM for the 2026 Back to School Foam Party & Picnic!\nFoam Times:\nStepping Stones: 5:00 - 5:20 PM\nTK & Kinder: 5:25 - 5:45 PM\n1st & 2nd Grade: 5:50 - 6:10 PM\n3rd & 4th Grade: 6:15 - 6:35 PM\n5th Grade: 6:40 - 7:00 PM"
+    },
+    {
+      "_id": "4acd99b3-20dc-4174-9bf6-952f7e5c2518",
+      "title": "Fall 2026 Book Fair",
+      "excerpt": "It’s that time again! Book fair time!\n\nVolunteers Welcome!\nSign up here:\nhttps://www.signupgenius.com/go/8050544A5AE2BA1FA7-65264923-edison"
+    },
+    {
+      "_id": "581f3c0e-709c-4d34-9a89-60913ec900cf",
+      "title": "Edison FRC & PTA August 2026 Meeting",
+      "excerpt": "Join us in the Edison Library and on Zoom for the inaugural PTA and FRC meeting of the 2026-27 School Year! Whether you're a regular or new to the Edison community, you'll be welcome all the same!"
+    },
+    {
+      "_id": "5d2439f7-fdd1-4a96-a7d1-9241ba6614ff",
+      "title": "Morning Coffee by And I You Cafe",
+      "excerpt": "Start the school year off right by grabbing a darn fine cup of joe lovingly brewed by the folks of And I You Cafe, who will be posted up by the Keystone Gate on Thursday, August 13th from 7:30 to 9:00 AM."
+    },
+    {
+      "_id": "874181d0-38ad-4f75-9d5c-ecae4f207823",
+      "title": "Welcome Back Celebration @ Chuck E. Cheese",
+      "excerpt": "Come join us for our Welcome Back Celebration and Fundraiser at Chuck E. Cheese in Burbank. Edison will receive 20% back from all sales! Teachers and staff will be given a free salad bar/soft drink or pizza/soft drink combo and an invitation to enter the Ticketblaster!"
+    },
+    {
+      "_id": "89cbb438-a05a-474c-94cb-f0ac3c472f56",
+      "title": "Imagination Machine Assembly Submissions",
+      "excerpt": "The Imagination Machine is coming to Edison!! Students are invited to write their own short stories for a chance to see them performed live on stage! Submissions should be sent to President@weareedison.org and are due by Friday, Sept 26th."
+    },
+    {
+      "_id": "95ac66c1-477c-4b2b-af1d-de4d0383dec9",
+      "title": "CPK Dine Out",
+      "excerpt": "CPK dine out fundraiser! 20% of your bill will be donated to Edison."
+    },
+    {
+      "_id": "b9798fe5-f567-4149-af04-9d40984a401c",
+      "title": "Back to School Night",
+      "excerpt": "A great opportunity to meet your child’s teacher, get information about the classroom, how the teacher sends out communication, and overall what the year will look like! \n\nThere is no childcare during this time, so it is highly encouraged for parents to leave children at home. \n\nGr. 3-5 : 6:30 - 7:10 \nGr. TK-2: 7:15 - 7:55\n"
+    },
+    {
+      "_id": "bc3b23da-c578-4e55-8d0e-f57c6dd4c77b",
+      "title": "October FRC & PTA Association Meetings",
+      "excerpt": "Join us for the October FRC (6:15 pm) and PTA (7:00 pm) meetings!"
+    },
+    {
+      "_id": "beda504c-005e-4134-b7df-2a683f28b228",
+      "title": "Dine-Out! Handel's Homemade Ice Cream",
+      "excerpt": "Come beat the heat and help fund the programs provided by Edison PTA by grabbing a cone at Handel's Homemade Ice Cream on August 31st between 4-9PM!"
+    },
+    {
+      "_id": "ebbcfca3-ccca-4b41-84fd-a71aa147cbc9",
+      "title": "Reflections \"I Belong!\"",
+      "excerpt": "Submissions for Reflections (\"I Belong!\" theme) are due by Wed, Oct 15th and should be submitted electronically (only one submission per category per student) to https://forms.gle/SJ3QX8y7thXrqvL68. Categories include dance choreography, film production, literature, music composition, photography, and visual arts. Please see attached flyer and contact Rebecca Coutts, Reflections Chair at edisonreflections2025@gmail.com with any questions. "
+    },
+    {
+      "_id": "f62c46f9-4113-4151-b55b-f2ccb0504844",
+      "title": "Book Fair!",
+      "excerpt": "Everyone's favorite fundraiser! Come visit the Edison Bookstore pop-up, located conveniently within the Thomas Edison Elementary School Library.\n\nSkip the cash and make shopping easier. It’s a safe and cash-free way for your child to shop at the fair. You set the amount, and they shop. Everyone wins!"
+    }
+  ]
+}

@@ -161,7 +161,13 @@
   const featEventsQuery = `
     *[_type=="events" && defined(startDate) && startDate >= now() && featured==true]
       | order(startDate asc)[0...$n]{
-        title, excerpt, startDate, endDate, displayTime, sourceUrl, linkButtonTitle,
+        title,
+        "excerptPlain": select(
+          excerpt[0]._type == "block" => pt::text(excerpt),
+          type(excerpt) == "string" => excerpt,
+          ""
+        ),
+        startDate, endDate, displayTime, sourceUrl, linkButtonTitle,
         "image": {
           "asset": {
             "_ref": image.asset._ref,
@@ -289,7 +295,7 @@
           }
         }
         
-        const meta = dateTime + (e.excerpt ? `<br>${e.excerpt}` : '');
+        const meta = dateTime + (e.excerptPlain ? `<br>${e.excerptPlain}` : '');
         return { title: e.title, meta, href: e.sourceUrl || '/events', image: e.image, alt: e.alt };
       });
       console.log('✅ Processed event slides:', eventSlides);

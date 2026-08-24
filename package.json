@@ -10,6 +10,8 @@
     "fix": "npm audit fix && npm run build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
+    "migrate:excerpts": "sanity exec scripts/migrate-event-excerpts.ts --with-user-token",
+    "migrate:excerpts:dry": "sanity exec scripts/migrate-event-excerpts.ts --with-user-token -- --dry-run",
     "lint": "eslint ."
   },
   "keywords": [],

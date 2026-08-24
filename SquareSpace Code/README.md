@@ -110,7 +110,9 @@ A–Z plant directory with QR deep links (`/garden-plants#slug`).
 **What it does:**
 - Fetches all published events from Sanity
 - Displays events with correct date/time formatting
-- Handles Zoom and external link buttons (Zoom → https://meet.weareedison.org)
+- Renders rich text descriptions (bold, bullets, links) from Sanity
+- Clickable event images open a full-screen lightbox
+- Handles Zoom and external link buttons (uses event `sourceUrl`)
 
 Note: Calendar subscription is now handled globally (see `global-header-injection.html`).
 

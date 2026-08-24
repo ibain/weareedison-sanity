@@ -33,8 +33,30 @@ export default {
       { name: 'displayTime', type: 'boolean', title: 'Display Time', description: 'When checked, the event time will be shown on the website. When unchecked, only the date will be displayed.', initialValue: true },
       { name: 'location',  type: 'string', title: 'Location' },
       { name: 'locationLink', type: 'url', title: 'Location Link (optional)', description: 'Add a Google Maps or directions link - will show as "(map)" after location' },
-      { name: 'excerpt',   type: 'text',   rows: 2 },
+      {
+        name: 'excerpt',
+        title: 'Description',
+        type: 'blockContent',
+        description: 'Event details. Supports bold, bullet lists, and links.',
+      },
+      {
+        name: 'excerptLegacy',
+        title: 'Previous description (archived)',
+        type: 'text',
+        readOnly: true,
+        rows: 4,
+        hidden: ({ document }: { document?: { excerptLegacy?: string } }) => !document?.excerptLegacy,
+        description: 'Original plain-text description, kept when migrated to rich text.',
+      },
       { name: 'featured',  type: 'boolean', title: 'Show on home slider', initialValue: false, description: 'When checked, the event will be shown on the home slider.' },
+      {
+        name: 'browserJoinEnabled',
+        type: 'boolean',
+        title: 'Enable browser join window',
+        description:
+          'When checked (and Meeting Settings → schedule mode is “From Events calendar”), meet.weareedison.org opens during this event’s start/end time.',
+        initialValue: false,
+      },
       { name: 'sourceUrl', type: 'url',    title: 'Zoom / External link (optional)' },
       { name: 'linkButtonTitle', type: 'string', title: 'Link Button Title (optional)', description: 'Text for the external link button (defaults to "Would you like to know more?" if blank). Zoom link button is automatically applied.', initialValue: 'Would you like to know more?' },
       { 

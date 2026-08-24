@@ -1,3 +1,7 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,400;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+
 <style>
   /* Keep it simple and let the theme do most of the work */
   
@@ -41,6 +45,43 @@
     margin-bottom: 12px;
   }
   #sanity-events p{ margin: 0 0 16px 0; }
+
+  /* Rich text: theme only ships Overpass 600/700, so bold is invisible site-wide.
+     Load full weights for excerpt only; keep theme size/color elsewhere. */
+  #sanity-events .event-excerpt,
+  #sanity-events .event-excerpt p,
+  #sanity-events .event-excerpt li {
+    margin: 0 0 16px 0;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  #sanity-events .event-excerpt {
+    margin-bottom: 16px;
+  }
+  #sanity-events .event-excerpt > :last-child {
+    margin-bottom: 0;
+  }
+  #sanity-events .event-excerpt ul {
+    padding-left: 1.5em;
+  }
+  #sanity-events .event-excerpt li {
+    margin-bottom: 0.35em;
+  }
+  #sanity-events .event-excerpt a,
+  #sanity-events .event-excerpt .event-rich-link {
+    color: inherit;
+    text-decoration: underline;
+  }
+  #sanity-events .event-excerpt strong,
+  #sanity-events .event-excerpt .event-rich-strong {
+    font-weight: 700;
+  }
+  #sanity-events .event-excerpt em,
+  #sanity-events .event-excerpt .event-rich-em {
+    font-style: italic;
+    font-weight: inherit;
+  }
   
   /* Buttons: we use Squarespace's own classes so theme styling applies */
   #sanity-events .sqs-block-button-container{ 
