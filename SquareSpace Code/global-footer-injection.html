@@ -1,13 +1,15 @@
-/**
- * Squarespace → Settings → Advanced → Code Injection → Footer
- *
- * Shows a "Join PTA meeting" pill while meet.weareedison.org reports the join
- * window is open. Schedule comes from Sanity → Meeting Settings.
- *
- * No polling. The status payload carries absolute timestamps, so this script
- * fetches once per page load and then sleeps until the next window boundary.
- * A typical visitor costs one request.
- */
+<!--
+  Squarespace → Settings → Advanced → Code Injection → FOOTER
+  Paste this entire file, including the <script> tags.
+
+  Shows a "Join PTA meeting" pill while meet.weareedison.org reports the join
+  window is open. Schedule comes from Sanity → Meeting Settings.
+
+  No polling. The status payload carries absolute timestamps, so this script
+  fetches once per page load and then sleeps until the next window boundary.
+  A typical visitor costs one request.
+-->
+<script>
 (function () {
   var MEET_STATUS_URL = 'https://meet.weareedison.org/api/zoom/status';
   var MEET_JOIN_URL = 'https://meet.weareedison.org/';
@@ -144,3 +146,4 @@
 
   load();
 })();
+</script>

@@ -8,6 +8,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 - Events page content → Code Block on Events → `events-page-code-block.html`
 - App install page → Code Block on App page → `app-page-code-block.html`
 - Global features → Site Header Code Injection → `global-header-injection.html`
+- Zoom join banner → Site **Footer** Code Injection → `global-footer-injection.html`
 - **Garden page**: Intro → Code Block 1 → `garden-intro-code-block.html`; What's Going On → Code Block 2 → `garden-whats-going-on-code-block.html`; FAQ → Code Block 3 → `garden-faq-code-block.html`; optional styles → Page Header → `garden-page-header-injection.html`
 - **Garden Plants page** (`/garden-plants`) → Page Header → `garden-plants-header-injection.html`; Code Block → `garden-plants-code-block.html`
 
@@ -36,6 +37,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 
 ### 🌐 Global Files
 - **`global-header-injection.html`** - Global functionality (calendar links, etc.)
+- **`global-footer-injection.html`** - Zoom join banner pill (shows only during the meeting join window)
 - **`sanity-test.js`** - Testing script for debugging
 
 ## 🚀 How to Deploy to SquareSpace
@@ -89,6 +91,16 @@ A–Z plant directory with QR deep links (`/garden-plants#slug`).
 2. Copy contents of `global-header-injection.html`
 3. Paste into **Site Header Code Injection**
 4. Save
+
+### Step 3b: Zoom Join Banner
+1. Go to SquareSpace Dashboard → Settings → Advanced → Code Injection
+2. Copy the **entire** contents of `global-footer-injection.html`, including the `<script>` tags
+3. Paste into **Footer** (not Header)
+4. Save
+
+The pill only appears while Sanity → Meeting Settings says the join window is
+open, so on most days nothing renders. If you see raw JavaScript text at the
+bottom of the site, the `<script>` tags were dropped during paste.
 
 ## 📁 File Details
 
