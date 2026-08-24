@@ -1,0 +1,17 @@
+---
+description: Keep AGENTS.md short, accurate, and pruned on every relevant change
+alwaysApply: true
+---
+
+# Keep AGENTS.md current
+
+`AGENTS.md` at repo root is the pickup doc for other agents. Treat it as a map, not a dump.
+
+When you change schema, Squarespace snippets, deploy/CI, project IDs, content types, or how the repo is run:
+
+1. Update `AGENTS.md` in the same change.
+2. Prune lines that are now wrong or redundant.
+3. Put detail in existing READMEs (`README.md`, `SquareSpace Code/README.md`, `scripts/README.md`), not in `AGENTS.md`.
+4. Do not grow `AGENTS.md`. If a section is longer than a table or a few bullets, it belongs in a pointed-to file.
+
+Do not duplicate README into `AGENTS.md`. If README and code disagree, code wins; fix README, do not copy the stale bit into `AGENTS.md`.
