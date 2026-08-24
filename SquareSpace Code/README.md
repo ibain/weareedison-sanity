@@ -3,7 +3,7 @@
 This folder contains the code that connects Sanity CMS content to the SquareSpace website. These files make the events and slides from Sanity appear on the live website.
 
 ## TL;DR: Where does each file go?
-- Home page carousel → Code Block on Home → `slider-page-ready.html`
+- Home page carousel → Code Block on Home → `home-page-slider-code-block.html`
 - Events page styles → Page Header → `events-page-header-injection.html`
 - Events page content → Code Block on Events → `events-page-code-block.html`
 - App install page → Code Block on App page → `app-page-code-block.html`
@@ -15,7 +15,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 ## 📋 File Overview
 
 ### 🏠 Home Page Files
-- **`slider-page-ready.js`** - Home page carousel script
+- **`home-page-slider-code-block.html`** - Home page slider (Code Block: HTML + CSS + JS)
 - **`original-slider-code.txt`** - Reference code from original implementation
 
 ### 📱 App Install Page
@@ -45,7 +45,7 @@ This folder contains the code that connects Sanity CMS content to the SquareSpac
 ### Step 1: Home Page Carousel
 1. Go to SquareSpace Dashboard → Pages → Home
 2. Add a **Code Block** to the page
-3. Copy the entire contents of `slider-page-ready.js`
+3. Copy the entire contents of `home-page-slider-code-block.html`
 4. Paste into the Code Block
 5. Save the page
 
@@ -104,7 +104,7 @@ bottom of the site, the `<script>` tags were dropped during paste.
 
 ## 📁 File Details
 
-### `slider-page-ready.js`
+### `home-page-slider-code-block.html`
 **Purpose**: Creates the home page carousel that shows events and slides from Sanity
 
 **What it does:**

@@ -82,7 +82,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const SANITY_URL = 'https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production';
   const GROQ = `
-    *[_type=="events" && defined(startDate) && startDate >= now()]
+    *[_type=="events" && defined(startDate) && (
+        (defined(endDate) && endDate >= now()) ||
+        (!defined(endDate) && startDate >= now())
+      )]
       | order(startDate asc){
         _id, title, startDate, endDate, displayTime, location, locationLink, excerpt, sourceUrl, linkButtonTitle,
         "img": image.asset->url, "alt": coalesce(image.alt, title)

@@ -83,7 +83,12 @@
     const vars = Object.entries(params).map(([k,v])=>`&$${k}=${Q(String(v))}`).join('');
     return base + vars;
   }
-  async function runQuery(query, params){ const r=await fetch(qUrl(query, params)); const j=await r.json(); return j.result||[]; }
+  async function runQuery(query, params){
+    const r=await fetch(qUrl(query, params));
+    const j=await r.json();
+    if (j.error) console.error('Sanity query failed:', j.error);
+    return j.result||[];
+  }
   
   function imgUrl(imageObj, w=1600, h=900) { 
     console.log('🔍 imgUrl called with:', imageObj);
@@ -159,14 +164,13 @@
       "alt": coalesce(image.alt, title)
     }`;
   const featEventsQuery = `
-    *[_type=="events" && defined(startDate) && startDate >= now() && featured==true]
+    *[_type=="events" && defined(startDate) && featured==true && (
+        (defined(endDate) && endDate >= now()) ||
+        (!defined(endDate) && startDate >= now())
+      )]
       | order(startDate asc)[0...$n]{
         title,
-        "excerptPlain": select(
-          excerpt[0]._type == "block" => pt::text(excerpt),
-          type(excerpt) == "string" => excerpt,
-          ""
-        ),
+        "excerptPlain": coalesce(pt::text(excerpt), ""),
         startDate, endDate, displayTime, sourceUrl, linkButtonTitle,
         "image": {
           "asset": {
