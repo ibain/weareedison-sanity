@@ -21,24 +21,80 @@
   /* Re-fetch rather than reuse cached status once it is this old. */
   var STALE_AFTER_MS = 5 * 60 * 1000;
 
+  /* Edison brand palette — matches the calendar dialog's yellow panel + blue border. */
+  var BRAND_YELLOW = '#FFDE6C';
+  var BRAND_LIGHT_BLUE = '#90CAF9';
+  var BRAND_INK = '#354874';
+
+  var STYLE_ID = 'edison-meet-banner-style';
+
   var state = { data: null, fetchedAt: 0 };
   var timer = null;
+
+  function ensureStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+
+    var style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = [
+      '@keyframes edison-meet-rise{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}',
+      /* A white ring sits under the pulse so the yellow pill stays distinct
+         even when it floats over the brand yellow panels. */
+      '@keyframes edison-meet-pulse{0%{box-shadow:0 0 0 4px #fff,0 10px 30px rgba(53,72,116,.3),0 0 0 4px rgba(95,156,255,.85)}70%{box-shadow:0 0 0 4px #fff,0 10px 30px rgba(53,72,116,.3),0 0 0 20px rgba(95,156,255,0)}100%{box-shadow:0 0 0 4px #fff,0 10px 30px rgba(53,72,116,.3),0 0 0 4px rgba(95,156,255,0)}}',
+      '@keyframes edison-meet-blink{0%,100%{opacity:1}50%{opacity:.35}}',
+      '#' + BANNER_ID + '{animation:edison-meet-rise .45s ease-out both}',
+      '#' + BANNER_ID + ' .edison-meet-pill{animation:edison-meet-pulse 2.6s ease-out infinite}',
+      '#' + BANNER_ID + ' .edison-meet-pill:hover{transform:translateY(-2px)}',
+      '#' + BANNER_ID + ' .edison-meet-dot{animation:edison-meet-blink 1.4s ease-in-out infinite}',
+      '@media (prefers-reduced-motion:reduce){#' +
+        BANNER_ID +
+        ',#' +
+        BANNER_ID +
+        ' .edison-meet-pill,#' +
+        BANNER_ID +
+        ' .edison-meet-dot{animation:none}}',
+    ].join('');
+
+    document.head.appendChild(style);
+  }
 
   function ensureBanner(label) {
     var existing = document.getElementById(BANNER_ID);
     if (existing) return existing;
 
+    ensureStyles();
+
     var banner = document.createElement('div');
     banner.id = BANNER_ID;
     banner.style.cssText =
-      'display:none;position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,520px);width:100%;';
+      'display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,560px);width:100%;';
 
     var link = document.createElement('a');
+    link.className = 'edison-meet-pill';
     link.href = MEET_JOIN_URL;
-    link.textContent = label;
     link.style.cssText =
-      'display:block;text-align:center;background:#5f9cff;color:#fff;font-family:Overpass,system-ui,sans-serif;font-weight:700;text-transform:uppercase;text-decoration:none;padding:14px 22px;border-radius:999px;box-shadow:0 10px 30px rgba(53,72,116,.25);';
+      'display:flex;align-items:center;justify-content:center;gap:10px;' +
+      'background:' + BRAND_YELLOW + ';color:' + BRAND_INK + ';' +
+      'border:4px solid ' + BRAND_INK + ';' +
+      'box-shadow:0 0 0 4px #fff,0 10px 30px rgba(53,72,116,.3);' +
+      'font-family:Overpass,system-ui,sans-serif;font-weight:800;letter-spacing:.02em;' +
+      'font-size:clamp(.95rem,2.2vw,1.08rem);text-transform:uppercase;text-decoration:none;' +
+      'padding:15px 26px;border-radius:999px;transition:transform .18s ease;';
 
+    var dot = document.createElement('span');
+    dot.className = 'edison-meet-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.cssText =
+      'flex:0 0 auto;width:11px;height:11px;border-radius:50%;background:' +
+      BRAND_INK +
+      ';';
+
+    var text = document.createElement('span');
+    text.className = 'edison-meet-text';
+    text.textContent = label;
+
+    link.appendChild(dot);
+    link.appendChild(text);
     banner.appendChild(link);
     document.body.appendChild(banner);
     return banner;
@@ -51,7 +107,7 @@
       return;
     }
     var banner = ensureBanner(label);
-    banner.firstChild.textContent = label;
+    banner.querySelector('.edison-meet-text').textContent = label;
     banner.style.display = 'block';
   }
 
@@ -102,13 +158,18 @@
     }, wait);
   }
 
+  /* Titles are authored freely in Sanity, so only add "Join" when it's missing. */
+  function pillLabel(data) {
+    var title = data && data.title ? String(data.title).trim() : '';
+    if (!title) return 'Join PTA meeting in your browser';
+    if (/^join\b/i.test(title)) return title.replace(/[.!]+$/, '');
+    return 'Join ' + title + ' in your browser';
+  }
+
   function render() {
     var now = Date.now();
     var result = evaluate(state.data, now);
-    var label =
-      (state.data && state.data.title
-        ? 'Join ' + state.data.title + ' in your browser'
-        : 'Join PTA meeting in your browser');
+    var label = pillLabel(state.data);
 
     setVisible(result.open, label);
 
