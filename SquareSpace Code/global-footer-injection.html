@@ -70,16 +70,16 @@
     }
 
     var win = data.window;
-    if (!win) {
-      /* "Always" mode, or no schedule window — trust the server's flag. */
+    var start = win ? ms(win.openStartsAt) : null;
+    var end = win ? ms(win.openEndsAt) : null;
+    var next = win ? ms(win.nextOpenAt) : null;
+
+    /* No usable window ("always" mode, or a zero-length one) — trust the flag. */
+    if (start === null || end === null || end <= start) {
       return { open: data.open === true, nextChangeAt: null };
     }
 
-    var start = ms(win.openStartsAt);
-    var end = ms(win.openEndsAt);
-    var next = ms(win.nextOpenAt);
-
-    if (start !== null && end !== null && now >= start && now <= end) {
+    if (now >= start && now <= end) {
       return { open: true, nextChangeAt: end };
     }
 
