@@ -36,7 +36,7 @@ This is the content management system (CMS) for the We Are Edison website. It al
 - If a page is missing dynamic content (events, slider, or app page), you may need to paste a code snippet into a Code Block or Header Injection. Use the quick reference below and the instructions in `SquareSpace Code/README.md`.
 
 ### Squarespace placement quick reference
-- Home page carousel → Code Block on Home page → `SquareSpace Code/slider-page-ready.js`
+- Home page carousel → Code Block on Home page → `SquareSpace Code/home-page-slider-code-block.html`
 - Events page styles → Page Settings → Advanced → Page Header Code Injection → `SquareSpace Code/events-page-header-injection.html`
 - Events page content → Code Block on Events page → `SquareSpace Code/events-page-code-block.html`
 - App install page → Code Block on App page (e.g., "/app") → `SquareSpace Code/app-page-code-block.html`
@@ -232,7 +232,7 @@ weareedison-sanity/
 │   ├── garden-page-header-injection.html # Garden page CSS (optional)
 │   ├── garden-plants-code-block.html     # Garden plants A–Z index
 │   ├── garden-plants-header-injection.html # Garden plants CSS
-│   ├── slider-page-ready.js              # Home slider script
+│   ├── home-page-slider-code-block.html  # Home page slider Code Block
 │   └── global-header-injection.html      # Global functionality
 ├── sanity.config.ts  # Sanity configuration
 ├── package.json      # Dependencies and scripts
@@ -249,7 +249,7 @@ The `SquareSpace Code/` folder contains scripts that integrate Sanity content in
 - **`events-page-header-injection.html`**: CSS styling for events page (goes in Page Header)
 - **`garden-plants-code-block.html`**: A–Z plant index script (goes in Code Block on `/garden-plants`)
 - **`garden-plants-header-injection.html`**: Plant index CSS (goes in Page Header on `/garden-plants`)
-- **`slider-page-ready.js`**: Script for home page carousel (goes in Code Block)
+- **`home-page-slider-code-block.html`**: Home page slider (paste into Home Code Block)
 - **`global-header-injection.html`**: Global functionality (goes in Site Header)
 
 ### Deployment Process:
