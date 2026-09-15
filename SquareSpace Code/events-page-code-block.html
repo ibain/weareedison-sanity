@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         (!defined(endDate) && startDate >= now())
       )]
       | order(startDate asc){
-        _id, title, startDate, endDate, displayTime, location, locationLink, excerpt, sourceUrl, linkButtonTitle,
+        _id, title, startDate, endDate, displayTime, location, locationLink, excerpt, sourceUrl, linkButtonTitle, browserJoinEnabled,
         "img": image.asset->url, "alt": coalesce(image.alt, title)
       }
   `;
@@ -293,6 +293,15 @@ document.addEventListener('DOMContentLoaded', () => {
               ${where ? `<div>${where}</div>` : ''}
             </div>
             ${renderExcerpt(ev.excerpt)}
+
+            ${ev.browserJoinEnabled ? `
+              <div class="sqs-block-button-container sqs-block-button-container--left">
+                <div class="sqs-block-button">
+                  <a class="sqs-block-button-element sqs-button-element--primary sqs-button-element--medium"
+                     href="https://meet.weareedison.org/">Join in your browser</a>
+                </div>
+              </div>
+            ` : ''}
 
             ${zoom ? `
               <div class="sqs-block-button-container sqs-block-button-container--left" data-zoom-row="1" data-alignment="left">

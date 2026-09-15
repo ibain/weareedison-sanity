@@ -12,9 +12,9 @@ Keep this file short. Details live in the files listed at the bottom. After you 
 | Site | https://www.weareedison.org |
 | Project / dataset | `u8cybb7l` / `production` |
 | Public GROQ | `https://u8cybb7l.api.sanity.io/v2024-01-01/data/query/production` (no token) |
-| Node | 22 (`.nvmrc`). `nvm use` then `npm i` |
+| Node | >=22.18.0 (`.nvmrc`: 22; native TypeScript stripping for validation tests). `nvm use` then `npm i` |
 | Dev | `npm run dev` → http://localhost:3333 |
-| Check | `npm run lint` and `npm test` (`test` = `sanity build`) |
+| Check | `npm run lint` and `npm test` (`test` = meeting validation tests + `sanity build`) |
 
 Content types (`schemas/`, registered in `schemas/index.ts`):
 
@@ -24,11 +24,15 @@ Content types (`schemas/`, registered in `schemas/index.ts`):
 | `slides` | `schemas/slide.ts` | Evergreen home slider slides. |
 | `garden` | `schemas/garden.ts` | Singleton `documentId: 'garden'`. Intro / What's Going On / FAQ. |
 | `gardenPlant` | `schemas/gardenPlant.ts` | A–Z index + QR (`/garden-plants#slug`). Spanish fields stored, English renders. |
-| `meetingSettings` | `schemas/meetingSettings.ts` | Singleton `documentId: 'meetingSettings'`. Zoom join details for meet.weareedison.org. |
+| `meetingSettings` | `schemas/meetingSettings.ts` | Singleton `documentId: 'meetingSettings'`. Zoom join details and optional original `zoomInviteUrl` for meet.weareedison.org. |
 
 Desk: `deskStructure.ts`. Public URLs for plant QR: `lib/site.ts`.
 
 **Not in this repo:** Squarespace pages/theme. **meet.weareedison.org** (Vercel Zoom join) — this repo only stores meeting fields; Zoom SDK keys stay on Vercel. Squarespace footer banner (`SquareSpace Code/global-footer-injection.html`) hits `https://meet.weareedison.org/api/zoom/status`, not Sanity directly.
+
+Security overrides in `package.json` pin patched archive/YAML/TOML dependencies used by Studio tooling.
+
+Meeting schedule validators live in `schemas/meetingValidation.ts`; recurring day/times must be valid before publishing. Published notes are public. Event browser-join buttons and the five-minute banner refresh require re-pasting the Events Code Block and Site Footer snippets after this change.
 
 ## Two deploy paths
 

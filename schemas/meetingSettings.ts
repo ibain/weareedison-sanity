@@ -1,3 +1,5 @@
+import {validateRecurringDay, validateRecurringTime, validateTimeZone, validateZoomInviteUrl} from './meetingValidation'
+
 export default {
   name: 'meetingSettings',
   type: 'document',
@@ -32,6 +34,14 @@ export default {
       title: 'Meeting passcode',
       description:
         'Leave blank if the meeting uses waiting room only. Same passcode people already get in Zoom invite links (public Sanity read).',
+    },
+    {
+      name: 'zoomInviteUrl',
+      type: 'url',
+      title: 'Zoom invite link (optional)',
+      description: 'Paste the original Zoom invite URL, including its encrypted pwd value. Used for the Zoom app alternative; keep the plain Meeting passcode above for browser joining.',
+      validation: (Rule: any) => Rule.custom((value: string | undefined, context: any) =>
+        validateZoomInviteUrl(value, context.document?.meetingNumber)),
     },
     {
       name: 'enabled',
@@ -72,7 +82,7 @@ export default {
       validation: (Rule: any) =>
         Rule.custom((value: number | undefined, context: any) => {
           if (context.document?.scheduleMode !== 'recurring') return true
-          if (!value) return 'Pick which week of the month'
+          if (!Number.isInteger(value) || !value || value < 1 || value > 5) return 'Pick a week from 1 through 5'
           return true
         }),
     },
@@ -80,6 +90,8 @@ export default {
       name: 'recurringDayOfWeek',
       type: 'string',
       title: 'Day of week',
+      validation: (Rule: any) => Rule.custom((value: string | undefined, context: any) =>
+        validateRecurringDay(value, context.document?.scheduleMode)),
       options: {
         list: [
           {title: 'Sunday', value: 'sunday'},
@@ -99,6 +111,8 @@ export default {
       name: 'recurringStartTime',
       type: 'string',
       title: 'Meeting start time',
+      validation: (Rule: any) => Rule.custom((value: string | undefined, context: any) =>
+        validateRecurringTime(value, context.document?.scheduleMode)),
       description: '24-hour local time, e.g. 18:30 for 6:30 PM',
       hidden: ({document}: {document?: {scheduleMode?: string}}) =>
         document?.scheduleMode !== 'recurring',
@@ -107,6 +121,8 @@ export default {
       name: 'recurringEndTime',
       type: 'string',
       title: 'Meeting end time',
+      validation: (Rule: any) => Rule.custom((value: string | undefined, context: any) =>
+        validateRecurringTime(value, context.document?.scheduleMode, context.document?.recurringStartTime)),
       description: '24-hour local time, e.g. 20:00 for 8:00 PM',
       hidden: ({document}: {document?: {scheduleMode?: string}}) =>
         document?.scheduleMode !== 'recurring',
@@ -115,6 +131,7 @@ export default {
       name: 'timezone',
       type: 'string',
       title: 'Timezone',
+      validation: (Rule: any) => Rule.custom(validateTimeZone),
       initialValue: 'America/Los_Angeles',
       description: 'Used for recurring schedule math (Pacific for Edison PTA).',
     },
@@ -146,7 +163,7 @@ export default {
       type: 'text',
       rows: 3,
       title: 'Internal notes',
-      description: 'For PTA board only — not shown on the public meet page.',
+      description: 'Not shown on the meet page, but published notes are publicly readable through Sanity. Do not enter private board information.',
     },
   ],
   preview: {

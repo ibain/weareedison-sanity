@@ -5,9 +5,8 @@
   Shows a "Join PTA meeting" pill while meet.weareedison.org reports the join
   window is open. Schedule comes from Sanity → Meeting Settings.
 
-  No polling. The status payload carries absolute timestamps, so this script
-  fetches once per page load and then sleeps until the next window boundary.
-  A typical visitor costs one request.
+  Recomputes schedule boundaries locally and refreshes at least every five
+  minutes while visible so Studio changes reach visitors already on the page.
 -->
 <script>
 (function () {
@@ -16,7 +15,7 @@
   var BANNER_ID = 'edison-meet-banner';
 
   /* Wake up at least this often so a sleeping tab or clock drift can't strand us. */
-  var MAX_SLEEP_MS = 30 * 60 * 1000;
+  var MAX_SLEEP_MS = 5 * 60 * 1000;
   var MIN_SLEEP_MS = 15 * 1000;
   /* Re-fetch rather than reuse cached status once it is this old. */
   var STALE_AFTER_MS = 5 * 60 * 1000;
@@ -150,7 +149,7 @@
     var wait = Math.max(MIN_SLEEP_MS, Math.min(delayMs, MAX_SLEEP_MS));
     timer = setTimeout(function () {
       timer = null;
-      if (refetch || Date.now() - state.fetchedAt > STALE_AFTER_MS) {
+      if (refetch || Date.now() - state.fetchedAt >= STALE_AFTER_MS) {
         load();
       } else {
         render();
@@ -186,6 +185,7 @@
   function load() {
     fetch(MEET_STATUS_URL, { credentials: 'omit' })
       .then(function (res) {
+        if (!res.ok) throw new Error('Meeting status unavailable');
         return res.json();
       })
       .then(function (data) {
@@ -201,7 +201,7 @@
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState !== 'visible') return;
-    if (Date.now() - state.fetchedAt > STALE_AFTER_MS) load();
+    if (Date.now() - state.fetchedAt >= STALE_AFTER_MS) load();
     else render();
   });
 

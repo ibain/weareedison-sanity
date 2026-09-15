@@ -304,3 +304,8 @@ If you want the What's Going On section to use a Squarespace block you already h
 
 **Last Updated**: August 2025  
 **For Technical Support**: Track down Ian Bain
+
+
+## Zoom join update
+
+Re-paste `events-page-code-block.html` into the Events Code Block and `global-footer-injection.html` into Site Footer Code Injection. Browser-enabled events now offer a browser-join button alongside their original external link. The banner refreshes within five minutes of Studio changes (plus the API cache delay). In Meeting Settings, the optional Zoom invite link must be the original Zoom URL for the configured meeting; keep the plain passcode in its separate field.
